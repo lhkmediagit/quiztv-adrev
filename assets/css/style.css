@@ -34,6 +34,17 @@
     box-sizing: border-box;
 }
 
+html, body {
+    touch-action: manipulation;
+}
+
+.Advertisement_bottom__ROuWn {
+    height: 1px;
+    width: stretch;
+    background-color: #c9c9c9;
+    margin: 10px 0px 10px 0px;
+                    }
+
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: var(--text);
@@ -518,7 +529,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .play-container {
     width: 100%;
-    max-width: 680px;
+    max-width: 1000px;
     background-color: var(--white);
     border-radius: var(--radius-lg);
     border: 1px solid var(--border);
@@ -1426,6 +1437,16 @@ h1, h2, h3, h4, h5, h6 {
    AD CONTAINER STYLES — Google Ad Manager Integration
    ═══════════════════════════════════════════════════════════════ */
 
+/* Hide ad borders and labels when slot is empty or loading */
+.ad-banner-container[data-ad-empty="true"] {
+    display: none !important;
+}
+
+.ad-banner-container[data-ad-empty="true"] .ad-label,
+.ad-banner-container[data-ad-empty="true"] .Advertisement_bottom__ROuWn {
+    display: none !important;
+}
+
 /* Banner Ad Container */
 .ad-banner-container {
     display: flex;
@@ -1522,8 +1543,6 @@ h1, h2, h3, h4, h5, h6 {
 .ad-play-banner {
     margin-top: 24px !important;
     margin-bottom: 24px !important;
-    max-width: 336px !important;
-    width: 100% !important;
     margin-left: auto !important;
     margin-right: auto !important;
     clear: both;
@@ -2698,19 +2717,20 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .question-box {
-    background-color: var(--primary-light) !important;
-    border-left: 5px solid var(--primary) !important;
-    border-radius: var(--radius-md) !important;
-    padding: 20px !important;
-    margin-bottom: 20px !important;
-    box-shadow: var(--shadow-sm) !important;
+    background-color: transparent !important;
+    border-left: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 24px !important;
+    box-shadow: none !important;
 }
 
 .question-box .quiz-play-question {
     margin-bottom: 0 !important;
-    font-size: 20px !important;
+    font-size: 26px !important;
     font-weight: 700 !important;
-    color: var(--text) !important;
+    color: #1e293b !important;
     line-height: 1.4 !important;
 }
 
@@ -2726,6 +2746,8 @@ h1, h2, h3, h4, h5, h6 {
     max-width: 1400px;
     margin: 0 auto;
     width: 100%;
+    padding: 0 16px;
+    box-sizing: border-box;
 }
 
 .skyscraper-ad {
@@ -2733,9 +2755,19 @@ h1, h2, h3, h4, h5, h6 {
     width: 160px;
     position: sticky;
     top: 90px;
-    margin: 30px 20px;
+    margin: 30px 12px;
     flex-shrink: 0;
     z-index: 10;
+}
+
+/* Prevent content overflow when skyscraper ads are visible on medium viewports */
+@media (min-width: 1200px) and (max-width: 1400px) {
+    .hub-quiz-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    .hub-hero__stats {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
 }
 
 @media (min-width: 1200px) {
@@ -2785,14 +2817,12 @@ h1, h2, h3, h4, h5, h6 {
 
 @media (min-width: 600px) {
     .quiz-options-list {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: wrap !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
         gap: 16px !important;
     }
     .quiz-options-list .option-btn {
-        flex: 1 !important;
-        min-width: 200px !important;
+        width: 100% !important;
         margin-bottom: 0 !important;
     }
 }
@@ -2801,30 +2831,31 @@ h1, h2, h3, h4, h5, h6 {
     position: relative !important;
     padding: 0 !important;
     overflow: visible !important;
-    border: 1.5px solid #cbd5e1 !important;
+    border: 1.5px solid #bae6fd !important;
     border-radius: 12px !important;
-    background-color: #ffffff !important;
+    background-color: #f0f9ff !important;
     min-height: 56px !important;
     display: flex !important;
     align-items: stretch !important;
     gap: 0 !important;
     cursor: pointer !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
+    transition: var(--transition) !important;
 }
 
 .option-btn-quiztv .option-letter {
     width: 44px !important;
     height: auto !important;
     border-radius: 10px 0 0 10px !important;
-    background-color: #f8fafc !important;
+    background-color: #e0f2fe !important;
     border: none !important;
-    border-right: 1.5px solid #cbd5e1 !important;
+    border-right: 1.5px solid #bae6fd !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    font-size: 16px !important;
+    font-size: 18px !important;
     font-weight: 700 !important;
-    color: #64748b !important;
+    color: #0284c7 !important;
     flex-shrink: 0 !important;
     margin: 0 !important;
 }
@@ -2832,11 +2863,21 @@ h1, h2, h3, h4, h5, h6 {
 .option-btn-quiztv .option-text {
     flex: 1 !important;
     padding: 14px 20px !important;
-    font-size: 16px !important;
+    font-size: 18px !important;
     font-weight: 700 !important;
-    color: #334155 !important;
+    color: #0f172a !important;
     text-align: center !important;
     margin: 0 !important;
+}
+
+.option-btn-quiztv:hover:not(:disabled) {
+    background-color: #e0f2fe !important;
+    border-color: #7dd3fc !important;
+}
+
+.option-btn-quiztv:hover:not(:disabled) .option-letter {
+    background-color: #bae6fd !important;
+    border-right-color: #7dd3fc !important;
 }
 
 /* Option Correct state for QuizTv */
@@ -3260,6 +3301,242 @@ h1, h2, h3, h4, h5, h6 {
         flex-direction: column !important;
         align-items: flex-start !important;
         gap: 12px !important;
+    }
+}
+
+/* ==========================================================================
+   QUIZTV VISUAL CONTAINER WRAPPER & BADGE STYLING
+   ========================================================================== */
+
+/* Container row for Question & Visual Clue (Desktop side-by-side by default) */
+.quiz-question-visual-row {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 32px !important;
+    margin-bottom: 24px !important;
+    width: 100% !important;
+}
+
+/* Question block on left (Desktop default) */
+.question-box {
+    background-color: transparent !important;
+    border-left: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    flex: 1.3 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    display: block !important;
+    height: auto !important;
+}
+
+.question-box .quiz-play-question {
+    margin-bottom: 0 !important;
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    line-height: 1.4 !important;
+}
+
+/* Visual Wrapper on right (Desktop default) */
+.quiz-visual-wrapper {
+    flex: 1 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    position: relative !important;
+    aspect-ratio: auto !important;
+    height: auto !important;
+}
+
+.quiz-visual-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    display: block !important;
+}
+
+.quiz-visual-container img,
+.legacy-question-image {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 250px !important;
+    object-fit: cover !important;
+    border-radius: 12px !important;
+    display: block !important;
+    margin: 0 !important;
+}
+
+/* Label badges hide/show defaults */
+.question-label-desktop {
+    display: flex !important;
+}
+
+.question-label-mobile {
+    display: none !important;
+}
+
+/* Default Options Grid (Desktop default: 2x2 grid layout) */
+@media (min-width: 768px) {
+    .quiz-options-list {
+        margin: 32px 0 24px !important;
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 16px !important;
+    }
+    
+    .quiz-options-list .option-btn-quiztv {
+        width: 100% !important;
+        margin-bottom: 0 !important;
+        flex: none !important;
+    }
+}
+
+/* Center and align ad banners with the content column */
+.ad-play-mid,
+.ad-play-question,
+.ad-play-banner {
+    max-width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* Optimized Mobile Layout for Quiz Gameplay to fit picture, question and options in viewport */
+@media (max-width: 767px) {
+    /* Main wrapper and container spacing */
+    .play-wrapper {
+        min-height: auto !important;
+        padding: 0 !important;
+    }
+    
+    .play-container {
+        border-radius: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        min-height: auto !important;
+    }
+    
+    .quiz-card-container {
+        padding: 16px !important; /* Reduced padding on mobile to fit 400px better */
+        margin: 8px !important;
+        border-radius: 12px !important;
+    }
+    
+    /* Layout stacking and ordering */
+    .quiz-question-visual-row {
+        flex-direction: column !important;
+        gap: 0 !important;
+        margin-bottom: 0 !important;
+    }
+    
+    .quiz-visual-wrapper {
+        order: 1 !important; /* Image on top */
+        margin: 0 auto 16px !important;
+        width: 100% !important;
+        max-width: 400px !important;
+        aspect-ratio: 400 / 133 !important; /* Strictly 400x133 visual wrapper */
+        height: auto !important;
+    }
+    
+    .quiz-visual-container {
+        height: 100% !important;
+        border-radius: 0 !important;
+    }
+    
+    .quiz-visual-container img,
+    .legacy-question-image {
+        height: 100% !important;
+        max-height: none !important;
+        border-radius: 0 !important;
+    }
+    
+    .question-label-desktop {
+        display: none !important;
+    }
+    
+    .question-label-mobile {
+        display: inline-block !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        background-color: #d74338 !important;
+        color: #ffffff !important;
+        font-size: 14px !important;
+        font-weight: 700 !important;
+        padding: 8px 16px !important;
+        z-index: 10 !important;
+        font-family: 'Outfit', sans-serif !important;
+        border-radius: 0 !important;
+    }
+    
+    /* Fallback state when there is no image on mobile */
+    .quiz-visual-wrapper.no-image {
+        margin: 0 auto 16px !important;
+        width: 100% !important;
+        max-width: 400px !important;
+        aspect-ratio: auto !important;
+        height: auto !important;
+    }
+
+    .quiz-visual-wrapper.no-image .question-label-mobile {
+        position: static !important;
+        border-radius: 4px !important;
+        display: inline-block !important;
+    }
+    
+    .question-box {
+        order: 2 !important; /* Question in middle */
+        width: 100% !important;
+        max-width: 400px !important;
+        height: 66px !important; /* Strictly 400x66 question box */
+        margin: 0 auto 20px !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    
+    .question-box .quiz-play-question {
+        font-size: 20px !important;
+        line-height: 1.3 !important;
+    }
+    
+    /* Options list: Stacked vertically on mobile, max-width 400px */
+    .quiz-options-list {
+        margin: 16px auto 20px !important;
+        width: 100% !important;
+        max-width: 400px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+    
+    .quiz-options-list .option-btn-quiztv {
+        min-height: 56px !important;
+        border-radius: 12px !important;
+        flex: none !important;
+        width: 100% !important;
+    }
+    
+    .option-btn-quiztv .option-letter {
+        width: 44px !important;
+        font-size: 16px !important;
+        border-radius: 10px 0 0 10px !important;
+    }
+    
+    .option-btn-quiztv .option-text {
+        padding: 14px 20px !important;
+        font-size: 16px !important;
+    }
+    
+    /* Center and align ad banners on mobile to 400px column */
+    .ad-play-mid,
+    .ad-play-question,
+    .ad-play-banner {
+        max-width: 400px !important;
     }
 }
 

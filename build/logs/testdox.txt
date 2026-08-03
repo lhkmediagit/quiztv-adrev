@@ -1,0 +1,26 @@
+Ads Txt
+ [x] Ads txt serving enabled
+ [x] Ads txt serving disabled
+
+Example Database
+ [x] Model find all
+ [x] Soft delete leaves row
+
+Example Session
+ [x] Session simple
+
+Health
+ [x] Is defined app path
+ [x] Base url has been set
+
+Script Settings
+ [x] Script settings database model
+ [x] Script settings helper
+ [x] Script settings routes registered
+
+Security And Database
+ [x] Password encryption
+ [x] Auth filters redirect
+ [x] Cache control headers
+ [x] Ad settings structure
+

@@ -10,6 +10,7 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'HomeController::index');
 $routes->get('quiz/(:segment)', 'QuizController::play/$1');
 $routes->get('quiz/(:segment)/play', 'QuizController::play/$1');
+$routes->get('ads.txt', 'AdsController::index');
 
 // Info static pages
 $routes->get('info/about', 'InfoController::about');
@@ -60,6 +61,8 @@ $routes->group('admin', ['filter' => 'adminAuth'], function($routes) {
     $routes->post('categories/delete/(:num)', 'Admin\CategoryController::delete/$1');
     $routes->get('ad-settings', 'Admin\AdSettingsController::index');
     $routes->post('ad-settings/update', 'Admin\AdSettingsController::update');
+    $routes->get('script-settings', 'Admin\ScriptSettingsController::index');
+    $routes->post('script-settings/update', 'Admin\ScriptSettingsController::update');
 
     // Player / Lead Information Routes
     $routes->get('players', 'Admin\PlayerController::index');

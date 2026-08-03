@@ -2,7 +2,7 @@
 
 <?= $this->section('content') ?>
 <div class="admin-action-row">
-    <div>
+     <div style="display: flex; gap: 12px; flex-wrap: wrap; width: 100%;">
         <a href="<?= site_url('admin/quizzes') ?>" class="btn btn-outline">&larr; Back to Quizzes</a>
         <a href="<?= site_url('admin/questions/create/' . esc($quiz->id)) ?>" class="btn btn-primary">+ Add Single Question</a>
     </div>
@@ -29,9 +29,26 @@
                             <td><strong>#<?= esc($q->order_index) ?></strong></td>
                             <td>Round <?= esc($q->round_number) ?></td>
                             <td>
-                                <div class="admin-question-text"><?= esc($q->question) ?></div>
-                                <div class="admin-explanation-text"><em>Explanation:</em> <?= esc($q->explanation) ?></div>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <?php if (!empty($q->visual)): ?>
+                                        <div class="question-list-thumbnail" style="width: 50px; height: 50px; border-radius: 6px; border: 1px solid var(--border); overflow: hidden; display: flex; align-items: center; justify-content: center; background: #f8fafc; flex-shrink: 0;">
+                                            <?= $q->visual ?>
+                                        </div>
+                                    <?php endif; ?>
+                                    <div>
+                                        <div class="admin-question-text"><?= esc($q->question) ?></div>
+                                        <div class="admin-explanation-text"><em>Explanation:</em> <?= esc($q->explanation) ?></div>
+                                    </div>
+                                </div>
                             </td>
+
+                            <style>
+                                .question-list-thumbnail img {
+                                    width: 100%;
+                                    height: 100%;
+                                    object-fit: cover;
+                                }
+                            </style>
                             <td>
                                 <ul class="admin-options-preview">
                                     <li class="<?= $q->correct_option == 1 ? 'text-success' : '' ?>">1: <?= esc($q->option1) ?></li>

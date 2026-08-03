@@ -62,9 +62,19 @@
         </div>
 
         <div class="form-group">
-            <label for="thumbnail" class="form-label">Thumbnail Image</label>
+            <label for="thumbnail" class="form-label">Thumbnail Image size - 16:9 (eg. 800*450)</label>
             <input type="file" name="thumbnail" id="thumbnail" accept="image/*" class="form-control-file">
-            <span class="form-help-text">Optional banner image. Maximum size: 2MB.</span>
+            <span class="form-help-text">Upload a file from your device. Maximum size: 2MB.</span>
+
+            <div style="display: flex; align-items: center; justify-content: center; margin: 12px 0;">
+                <span style="height: 1px; flex: 1; background-color: var(--border);"></span>
+                <span style="padding: 0 10px; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px;">OR</span>
+                <span style="height: 1px; flex: 1; background-color: var(--border);"></span>
+            </div>
+
+            <label for="thumbnail_url" class="form-label">Thumbnail URL</label>
+            <input type="url" name="thumbnail_url" id="thumbnail_url" class="form-control" value="<?= old('thumbnail_url') ?>" placeholder="https://example.com/image.jpg">
+            <span class="form-help-text">Or enter a direct URL to an external image.</span>
         </div>
 
         <div class="form-group form-checkbox">

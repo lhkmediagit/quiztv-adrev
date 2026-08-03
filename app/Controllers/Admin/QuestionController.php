@@ -65,15 +65,16 @@ class QuestionController extends BaseController
 
         $rules = [
             'quiz_id'        => 'required|integer',
-            'round_number'   => 'required|integer',
+            'round_number'   => 'permit_empty|integer',
             'question'       => 'required',
-            'explanation'    => 'required',
+            'explanation'    => 'permit_empty',
             'option1'        => 'required|max_length[500]',
             'option2'        => 'required|max_length[500]',
             'option3'        => 'required|max_length[500]',
             'option4'        => 'required|max_length[500]',
             'correct_option' => 'required|integer|in_list[1,2,3,4]',
             'order_index'    => 'required|integer',
+            'image_url'      => 'permit_empty',
         ];
 
         if (!$this->validate($rules)) {
@@ -84,7 +85,7 @@ class QuestionController extends BaseController
 
         $data = [
             'quiz_id'        => (int)$this->request->getPost('quiz_id'),
-            'round_number'   => (int)$this->request->getPost('round_number'),
+            'round_number'   => (int)($this->request->getPost('round_number') ?: 1),
             'question'       => $this->request->getPost('question'),
             'explanation'    => $this->request->getPost('explanation'),
             'option1'        => $this->request->getPost('option1'),
@@ -94,6 +95,21 @@ class QuestionController extends BaseController
             'correct_option' => (int)$this->request->getPost('correct_option'),
             'order_index'    => (int)$this->request->getPost('order_index'),
         ];
+
+        // Handle visual image file upload OR image URL input
+        $visualFile = $this->request->getFile('visual');
+        $imageUrlInput = $this->request->getPost('image_url');
+
+        if ($visualFile && $visualFile->isValid() && !$visualFile->hasMoved()) {
+            $visualUrl = upload_to_docservice($visualFile, 'quizhive/questions');
+            if ($visualUrl === null) {
+                return redirect()->back()->withInput()->with('errors', ['visual' => 'Failed to upload visual image to Document Service.']);
+            }
+            $data['visual'] = '<img class="legacy-question-image" src="' . htmlspecialchars($visualUrl) . '" alt="Visual Clue" />';
+        } elseif (!empty($imageUrlInput)) {
+            // Store the input image URL as the image tag
+            $data['visual'] = '<img class="legacy-question-image" src="' . htmlspecialchars($imageUrlInput) . '" alt="Visual Clue" />';
+        }
 
         $questionModel->insert($data);
 
@@ -133,15 +149,16 @@ class QuestionController extends BaseController
         }
 
         $rules = [
-            'round_number'   => 'required|integer',
+            'round_number'   => 'permit_empty|integer',
             'question'       => 'required',
-            'explanation'    => 'required',
+            'explanation'    => 'permit_empty',
             'option1'        => 'required|max_length[500]',
             'option2'        => 'required|max_length[500]',
             'option3'        => 'required|max_length[500]',
             'option4'        => 'required|max_length[500]',
             'correct_option' => 'required|integer|in_list[1,2,3,4]',
             'order_index'    => 'required|integer',
+            'image_url'      => 'permit_empty',
         ];
 
         if (!$this->validate($rules)) {
@@ -149,7 +166,7 @@ class QuestionController extends BaseController
         }
 
         $data = [
-            'round_number'   => (int)$this->request->getPost('round_number'),
+            'round_number'   => (int)($this->request->getPost('round_number') ?: ($question->round_number ?? 1)),
             'question'       => $this->request->getPost('question'),
             'explanation'    => $this->request->getPost('explanation'),
             'option1'        => $this->request->getPost('option1'),
@@ -159,6 +176,89 @@ class QuestionController extends BaseController
             'correct_option' => (int)$this->request->getPost('correct_option'),
             'order_index'    => (int)$this->request->getPost('order_index'),
         ];
+
+        // Fetch current visual value
+        $currentVisual = $question->visual;
+
+        // Check if remove visual is checked
+        if ($this->request->getPost('remove_visual') == '1') {
+            if ($currentVisual && $currentVisual !== 'none') {
+                if (preg_match('/src="([^"]+)"/', $currentVisual, $matches)) {
+                    $src = $matches[1];
+                    $filename = basename($src);
+                    $filePath = FCPATH . 'uploads/questions/' . $filename;
+                    if (file_exists($filePath)) {
+                        @unlink($filePath);
+                    }
+                }
+            }
+            $currentVisual = 'none';
+        }
+
+        // Check if restore default is checked
+        if ($this->request->getPost('restore_default') == '1') {
+            $currentVisual = null;
+        }
+
+        // Handle uploaded file OR URL input
+        $visualFile = $this->request->getFile('visual');
+        $imageUrlInput = $this->request->getPost('image_url');
+
+        // Check if the previous image was an external URL
+        $previousWasUrl = false;
+        if ($question->visual && $question->visual !== 'none') {
+            if (preg_match('/src="([^"]+)"/', $question->visual, $matches)) {
+                $src = $matches[1];
+                if (strpos($src, 'uploads/questions/') === false) {
+                    $previousWasUrl = true;
+                }
+            }
+        }
+
+        if ($visualFile && $visualFile->isValid() && !$visualFile->hasMoved()) {
+            $visualUrl = upload_to_docservice($visualFile, 'quizhive/questions');
+            if ($visualUrl === null) {
+                return redirect()->back()->withInput()->with('errors', ['visual' => 'Failed to upload visual image to Document Service.']);
+            }
+
+            // Delete old file locally only if it was local
+            if ($question->visual && $question->visual !== 'none') {
+                if (preg_match('/src="([^"]+)"/', $question->visual, $matches)) {
+                    $url = $matches[1];
+                    $isLocal = str_contains($url, base_url('uploads/questions/'));
+                    if ($isLocal) {
+                        $localPath = str_replace(base_url(), FCPATH, $url);
+                        if (is_file($localPath)) {
+                            @unlink($localPath);
+                        }
+                    }
+                }
+            }
+
+            $currentVisual = '<img class="legacy-question-image" src="' . htmlspecialchars($visualUrl) . '" alt="Visual Clue" />';
+        } elseif ($this->request->getPost('remove_visual') != '1') {
+            if (!empty($imageUrlInput)) {
+                // Delete old local file if there was one
+                if ($question->visual) {
+                    if (preg_match('/src="([^"]+)"/', $question->visual, $matches)) {
+                        $src = $matches[1];
+                        if (strpos($src, base_url('uploads/questions/')) !== false) {
+                            $filename = basename($src);
+                            $filePath = FCPATH . 'uploads/questions/' . $filename;
+                            if (file_exists($filePath)) {
+                                @unlink($filePath);
+                            }
+                        }
+                    }
+                }
+                $currentVisual = '<img class="legacy-question-image" src="' . htmlspecialchars($imageUrlInput) . '" alt="Visual Clue" />';
+            } elseif ($previousWasUrl) {
+                // If they cleared the URL, set to 'none'
+                $currentVisual = 'none';
+            }
+        }
+
+        $data['visual'] = $currentVisual;
 
         $questionModel->update($id, $data);
 
@@ -181,6 +281,18 @@ class QuestionController extends BaseController
         // Clean user responses referencing this question
         $db = \Config\Database::connect();
         $db->table('user_answers')->where('question_id', $id)->delete();
+
+        // Delete visual file if it exists
+        if ($question->visual) {
+            if (preg_match('/src="([^"]+)"/', $question->visual, $matches)) {
+                $src = $matches[1];
+                $filename = basename($src);
+                $filePath = FCPATH . 'uploads/questions/' . $filename;
+                if (file_exists($filePath)) {
+                    @unlink($filePath);
+                }
+            }
+        }
 
         $questionModel->delete($id);
 
@@ -242,7 +354,7 @@ class QuestionController extends BaseController
                 $order       = (int)trim($firstRow[8]);
 
                 if (!empty($question) && !empty($opt1) && !empty($opt2) && !empty($opt3) && !empty($opt4)) {
-                    $questionModel->insert([
+                    $insertData = [
                         'quiz_id'        => (int)$quiz_id,
                         'round_number'   => $round ?: 1,
                         'question'       => $question,
@@ -253,7 +365,16 @@ class QuestionController extends BaseController
                         'option4'        => $opt4,
                         'correct_option' => $correct,
                         'order_index'    => $order ?: $rowCount,
-                    ]);
+                    ];
+
+                    if (isset($firstRow[9])) {
+                        $imageUrl = trim($firstRow[9]);
+                        if (!empty($imageUrl)) {
+                            $insertData['visual'] = '<img class="legacy-question-image" src="' . htmlspecialchars($imageUrl) . '" alt="Visual Clue" />';
+                        }
+                    }
+
+                    $questionModel->insert($insertData);
                     $successCount++;
                 }
             }
@@ -279,7 +400,7 @@ class QuestionController extends BaseController
                 continue; // Skip row with invalid/missing fields
             }
 
-            $questionModel->insert([
+            $insertData = [
                 'quiz_id'        => (int)$quiz_id,
                 'round_number'   => $round ?: 1,
                 'question'       => $question,
@@ -290,7 +411,16 @@ class QuestionController extends BaseController
                 'option4'        => $opt4,
                 'correct_option' => $correct,
                 'order_index'    => $order ?: $rowCount,
-            ]);
+            ];
+
+            if (isset($row[9])) {
+                $imageUrl = trim($row[9]);
+                if (!empty($imageUrl)) {
+                    $insertData['visual'] = '<img class="legacy-question-image" src="' . htmlspecialchars($imageUrl) . '" alt="Visual Clue" />';
+                }
+            }
+
+            $questionModel->insert($insertData);
             $successCount++;
         }
 

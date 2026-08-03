@@ -60,6 +60,8 @@ class CreateAdSettingsTable extends Migration
             ['setting_key' => 'rewarded_enabled',       'setting_value' => '1', 'description' => 'Enable/disable rewarded ads'],
             ['setting_key' => 'rewarded_slot',          'setting_value' => '',  'description' => 'Rewarded ad unit path'],
             ['setting_key' => 'rewarded_message',       'setting_value' => 'Great job watching the ad! Keep going!', 'description' => 'Message shown after rewarded ad completion'],
+            ['setting_key' => 'ads_txt_enabled',        'setting_value' => '1', 'description' => 'Enable/disable dynamic ads.txt serving (1=enabled, 0=disabled)'],
+            ['setting_key' => 'ads_txt_content',        'setting_value' => "google.com, pub-7542579898564659, DIRECT, f08c47fec0942fa0", 'description' => 'Custom ads.txt content list'],
         ];
 
         $db = \Config\Database::connect();

@@ -4,7 +4,42 @@
     <meta charset="UTF-8">
     <title>Welcome to CodeIgniter 4!</title>
     <meta name="description" content="The small framework with powerful features">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script>
+        // Prevent zoom-in or zoom-out issues (mouse wheel + keyboard + touch gestures)
+        (function() {
+            // Prevent Ctrl + Mouse Wheel Zoom
+            document.addEventListener('wheel', function(e) {
+                if (e.ctrlKey) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            // Prevent Keyboard Zooming shortcuts (Ctrl + Plus, Ctrl + Minus, Ctrl + 0)
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && (e.key === '=' || e.key === '-' || e.key === '+' || e.key === '0' || e.keyCode === 187 || e.keyCode === 189 || e.keyCode === 48 || e.keyCode === 96 || e.keyCode === 107 || e.keyCode === 109)) {
+                    e.preventDefault();
+                }
+            });
+
+            // Prevent Pinch-to-Zoom on mobile devices
+            document.addEventListener('touchmove', function(e) {
+                if (e.touches.length > 1) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            // Prevent Double-Tap Zoom
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(e) {
+                const now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    e.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+        })();
+    </script>
     <link rel="shortcut icon" type="image/png" href="/favicon.ico">
 
     <!-- STYLES -->

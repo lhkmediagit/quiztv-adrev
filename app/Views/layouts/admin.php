@@ -2,7 +2,42 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script>
+        // Prevent zoom-in or zoom-out issues (mouse wheel + keyboard + touch gestures)
+        (function() {
+            // Prevent Ctrl + Mouse Wheel Zoom
+            document.addEventListener('wheel', function(e) {
+                if (e.ctrlKey) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            // Prevent Keyboard Zooming shortcuts (Ctrl + Plus, Ctrl + Minus, Ctrl + 0)
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && (e.key === '=' || e.key === '-' || e.key === '+' || e.key === '0' || e.keyCode === 187 || e.keyCode === 189 || e.keyCode === 48 || e.keyCode === 96 || e.keyCode === 107 || e.keyCode === 109)) {
+                    e.preventDefault();
+                }
+            });
+
+            // Prevent Pinch-to-Zoom on mobile devices
+            document.addEventListener('touchmove', function(e) {
+                if (e.touches.length > 1) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            // Prevent Double-Tap Zoom
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(e) {
+                const now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    e.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+        })();
+    </script>
     <title><?= esc($title ?? 'Admin Dashboard') ?></title>
     <!-- Dynamic Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
@@ -43,6 +78,9 @@
             </a>
             <a href="<?= site_url('admin/ad-settings') ?>" class="nav-link-item <?= strpos(current_url(), 'admin/ad-settings') !== false ? 'active' : '' ?>">
                 <span class="icon">💰</span> Ad Manager
+            </a>
+            <a href="<?= site_url('admin/script-settings') ?>" class="nav-link-item <?= strpos(current_url(), 'admin/script-settings') !== false ? 'active' : '' ?>">
+                <span class="icon">💻</span> Custom Scripts
             </a>
             <hr class="nav-divider">
             <a href="<?= site_url() ?>" class="nav-link-item">

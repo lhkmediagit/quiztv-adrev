@@ -37,32 +37,44 @@
             <div class="quiz-play-title-top" id="quiz-play-title-top" style="text-align: center; color: #d74338; font-weight: 800; font-size: 14px; text-transform: uppercase; margin-bottom: 20px; letter-spacing: 0.5px; font-family: 'Outfit', sans-serif;"></div>
             
             <div class="quiz-play-card fade-in" id="quiz-play-card">
-                <!-- Question block -->
-                <div class="question-box" style="width: 100%;">
-                    <div class="question-label" id="quiz-question-label" style="display: flex; align-items: center; gap: 8px; font-weight: 700; color: #475569; font-size: 16px; margin-bottom: 12px; font-family: 'Outfit', sans-serif;">
-                        <span style="font-size: 18px;">💬</span>
-                        <span>Question <span id="quiz-question-number-span">1</span></span>
+                <!-- Side-by-side row container for Desktop, stacked column for Mobile -->
+                <div class="quiz-question-visual-row">
+                    <!-- Question block (Left on Desktop, Below Image on Mobile) -->
+                    <div class="question-box" id="quiz-question-box">
+                        <!-- Desktop Question Label (speech bubble style) -->
+                        <div class="question-label question-label-desktop" id="quiz-question-label-desktop" style="display: flex; align-items: center; gap: 8px; font-weight: 700; color: #475569; font-size: 16px; margin-bottom: 12px; font-family: 'Outfit', sans-serif;">
+                            <span style="font-size: 18px;">💬</span>
+                            <span>Question <span id="quiz-question-number-span">1</span></span>
+                        </div>
+                        <!-- Question Text -->
+                        <h2 class="quiz-play-question" id="quiz-question-text" style="font-size: 24px; font-weight: 800; color: #1e293b; line-height: 1.4; font-family: 'Outfit', sans-serif; margin-bottom: 0;">Question text goes here?</h2>
                     </div>
-                    <h2 class="quiz-play-question" id="quiz-question-text" style="font-size: 24px; font-weight: 800; color: #1e293b; line-height: 1.4; font-family: 'Outfit', sans-serif; margin-bottom: 0;">Question text goes here?</h2>
+
+                    <!-- Visual Clue/Image Container Wrapper (Right on Desktop, Above Question on Mobile) -->
+                    <div class="quiz-visual-wrapper" id="quiz-visual-wrapper">
+                        <!-- Red Question Badge overlaying the image on mobile -->
+                        <div class="question-label question-label-mobile" id="quiz-question-label-mobile">
+                            Question <span id="quiz-question-number-span-mobile">1</span>
+                        </div>
+                        <!-- Visual Clue/Image Container -->
+                        <div class="quiz-visual-container" id="quiz-visual" style="display: none;"></div>
+                    </div>
                 </div>
-
-                <!-- Ad 1: Between Question and Photo/Image -->
+                <!-- Ad 1: Between Question and Options -->
                 <?= render_banner_slot('play_mid', 'ad-play-mid') ?>
-
-                <!-- Visual Clue/Image Container -->
-                <div class="quiz-visual-container" id="quiz-visual" style="display: none; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); width: 100%; margin-top: 15px; margin-bottom: 15px;"></div>
 
                 <div class="quiz-options-list" id="quiz-options-list">
                     <!-- Option buttons will be dynamically injected here -->
                 </div>
 
-                <!-- Ad 2: Between Options and Next Button -->
+                <!-- Ad 2: Between Options/Explanation and Next Button -->
                 <?= render_banner_slot('play_question', 'ad-play-question') ?>
-
+                
                 <div class="explanation-box" id="explanation-box" style="display: none;">
                     <div class="explanation-title" id="explanation-title">Correct answer 👍</div>
                     <p class="explanation-text" id="explanation-text">Explanation goes here...</p>
                 </div>
+
 
                 <div class="quiz-action-footer" style="margin-bottom: 15px;">
                     <button class="btn btn-primary btn-lg" id="next-question-btn" style="display: none;">Next Question ❯</button>
@@ -159,7 +171,7 @@
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 4px; text-align: left;">
                         <label for="lead-input-phone" style="font-size: 13px; font-weight: 700; color: var(--text);">Phone Number</label>
-                        <input type="tel" id="lead-input-phone" required placeholder="e.g. 9876543210" style="padding: 12px; font-size: 14px; border: 1.5px solid var(--border); border-radius: var(--radius-md); outline: none;">
+                        <input type="tel" id="lead-input-phone" required placeholder="e.g. 9876543210" pattern="[0-9]{10}" title="Please enter a valid 10-digit phone number" maxlength="10" minlength="10" style="padding: 12px; font-size: 14px; border: 1.5px solid var(--border); border-radius: var(--radius-md); outline: none;">
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 4px; text-align: left;">
                         <label for="lead-input-email" style="font-size: 13px; font-weight: 700; color: var(--text);">Email Address</label>
@@ -194,7 +206,7 @@
 
                 <div class="result-actions">
                     <button class="btn btn-primary" id="result-restart-btn">Restart Quiz</button>
-                    <a href="<?= site_url() ?>" class="btn btn-outline">Back to Home</a>
+                    <a href="<?= site_url() ?>" class="btn btn-outline">Play More Quiz</a>
                 </div>
 
                 <!-- Ad Banner: Results Screen -->

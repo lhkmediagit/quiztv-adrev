@@ -1,0 +1,238 @@
+ERROR - 2026-07-23 11:34:49 --> Error connecting to the database: mysqli_sql_exception: Access denied for user 'u691843472_quiztv2'@'localhost' (using password: YES) in /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php:201
+Stack trace:
+#0 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php(201): mysqli->real_connect()
+#1 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect()
+#2 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+#3 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#4 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+#5 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/BaseModel.php(713): CodeIgniter\Model->doFirst()
+#6 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/app/Models/QuizModel.php(45): CodeIgniter\BaseModel->first()
+#7 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/app/Controllers/QuizController.php(58): App\Models\QuizModel->getBySlug()
+#8 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(933): App\Controllers\QuizController->play()
+#9 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+#10 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+#11 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Boot.php(334): CodeIgniter\CodeIgniter->run()
+#12 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+#13 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/index.php(56): CodeIgniter\Boot::bootWeb()
+#14 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Access denied for user '****'@'localhost' (using password: YES) in /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php:246
+Stack trace:
+#0 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect()
+#1 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+#2 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#3 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+#4 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/BaseModel.php(713): CodeIgniter\Model->doFirst()
+#5 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/app/Models/QuizModel.php(45): CodeIgniter\BaseModel->first()
+#6 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/app/Controllers/QuizController.php(58): App\Models\QuizModel->getBySlug()
+#7 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(933): App\Controllers\QuizController->play()
+#8 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+#9 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+#10 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Boot.php(334): CodeIgniter\CodeIgniter->run()
+#11 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+#12 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/index.php(56): CodeIgniter\Boot::bootWeb()
+#13 {main}
+CRITICAL - 2026-07-23 11:34:49 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Access denied for user '****'@'localhost' (using password: YES)
+[Method: GET, Route: quiz/iq]
+in SYSTEMPATH/Database/BaseConnection.php on line 467.
+ 1 SYSTEMPATH/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+ 3 SYSTEMPATH/Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(713): CodeIgniter\Model->doFirst()
+ 5 APPPATH/Models/QuizModel.php(45): CodeIgniter\BaseModel->first()
+ 6 APPPATH/Controllers/QuizController.php(58): App\Models\QuizModel->getBySlug()
+ 7 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\QuizController->play()
+ 8 SYSTEMPATH/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+ 9 SYSTEMPATH/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+10 SYSTEMPATH/Boot.php(334): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+12 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb()
+ERROR - 2026-07-23 11:34:56 --> Error connecting to the database: mysqli_sql_exception: Access denied for user 'u691843472_quiztv2'@'localhost' (using password: YES) in /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php:201
+Stack trace:
+#0 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php(201): mysqli->real_connect()
+#1 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect()
+#2 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+#3 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#4 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#5 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/BaseModel.php(675): CodeIgniter\Model->doFindAll()
+#6 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/app/Controllers/HomeController.php(20): CodeIgniter\BaseModel->findAll()
+#7 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(933): App\Controllers\HomeController->index()
+#8 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+#9 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+#10 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Boot.php(334): CodeIgniter\CodeIgniter->run()
+#11 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+#12 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/index.php(56): CodeIgniter\Boot::bootWeb()
+#13 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Access denied for user '****'@'localhost' (using password: YES) in /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php:246
+Stack trace:
+#0 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect()
+#1 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+#2 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#3 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#4 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/BaseModel.php(675): CodeIgniter\Model->doFindAll()
+#5 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/app/Controllers/HomeController.php(20): CodeIgniter\BaseModel->findAll()
+#6 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(933): App\Controllers\HomeController->index()
+#7 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+#8 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+#9 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Boot.php(334): CodeIgniter\CodeIgniter->run()
+#10 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+#11 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/index.php(56): CodeIgniter\Boot::bootWeb()
+#12 {main}
+CRITICAL - 2026-07-23 11:34:56 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Access denied for user '****'@'localhost' (using password: YES)
+[Method: GET, Route: /]
+in SYSTEMPATH/Database/BaseConnection.php on line 467.
+ 1 SYSTEMPATH/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+ 3 SYSTEMPATH/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(675): CodeIgniter\Model->doFindAll()
+ 5 APPPATH/Controllers/HomeController.php(20): CodeIgniter\BaseModel->findAll()
+ 6 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\HomeController->index()
+ 7 SYSTEMPATH/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb()
+ERROR - 2026-07-23 11:35:45 --> Error connecting to the database: mysqli_sql_exception: Access denied for user 'u691843472_quiztv2'@'localhost' (using password: YES) in /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php:201
+Stack trace:
+#0 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php(201): mysqli->real_connect()
+#1 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect()
+#2 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+#3 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#4 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#5 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/BaseModel.php(675): CodeIgniter\Model->doFindAll()
+#6 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/app/Controllers/HomeController.php(20): CodeIgniter\BaseModel->findAll()
+#7 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(933): App\Controllers\HomeController->index()
+#8 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+#9 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+#10 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Boot.php(334): CodeIgniter\CodeIgniter->run()
+#11 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+#12 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/index.php(56): CodeIgniter\Boot::bootWeb()
+#13 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Access denied for user '****'@'localhost' (using password: YES) in /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php:246
+Stack trace:
+#0 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect()
+#1 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+#2 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#3 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#4 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/BaseModel.php(675): CodeIgniter\Model->doFindAll()
+#5 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/app/Controllers/HomeController.php(20): CodeIgniter\BaseModel->findAll()
+#6 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(933): App\Controllers\HomeController->index()
+#7 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+#8 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+#9 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Boot.php(334): CodeIgniter\CodeIgniter->run()
+#10 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+#11 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/index.php(56): CodeIgniter\Boot::bootWeb()
+#12 {main}
+CRITICAL - 2026-07-23 11:35:45 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Access denied for user '****'@'localhost' (using password: YES)
+[Method: GET, Route: /]
+in SYSTEMPATH/Database/BaseConnection.php on line 467.
+ 1 SYSTEMPATH/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+ 3 SYSTEMPATH/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(675): CodeIgniter\Model->doFindAll()
+ 5 APPPATH/Controllers/HomeController.php(20): CodeIgniter\BaseModel->findAll()
+ 6 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\HomeController->index()
+ 7 SYSTEMPATH/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb()
+ERROR - 2026-07-23 11:36:16 --> Error connecting to the database: mysqli_sql_exception: Access denied for user 'u691843472_quiztv2'@'localhost' (using password: YES) in /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php:201
+Stack trace:
+#0 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php(201): mysqli->real_connect()
+#1 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect()
+#2 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+#3 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#4 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#5 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/BaseModel.php(675): CodeIgniter\Model->doFindAll()
+#6 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/app/Controllers/HomeController.php(20): CodeIgniter\BaseModel->findAll()
+#7 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(933): App\Controllers\HomeController->index()
+#8 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+#9 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+#10 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Boot.php(334): CodeIgniter\CodeIgniter->run()
+#11 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+#12 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/index.php(56): CodeIgniter\Boot::bootWeb()
+#13 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Access denied for user '****'@'localhost' (using password: YES) in /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php:246
+Stack trace:
+#0 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect()
+#1 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+#2 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#3 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#4 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/BaseModel.php(675): CodeIgniter\Model->doFindAll()
+#5 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/app/Controllers/HomeController.php(20): CodeIgniter\BaseModel->findAll()
+#6 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(933): App\Controllers\HomeController->index()
+#7 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+#8 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+#9 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Boot.php(334): CodeIgniter\CodeIgniter->run()
+#10 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+#11 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/index.php(56): CodeIgniter\Boot::bootWeb()
+#12 {main}
+CRITICAL - 2026-07-23 11:36:16 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Access denied for user '****'@'localhost' (using password: YES)
+[Method: GET, Route: /]
+in SYSTEMPATH/Database/BaseConnection.php on line 467.
+ 1 SYSTEMPATH/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+ 3 SYSTEMPATH/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(675): CodeIgniter\Model->doFindAll()
+ 5 APPPATH/Controllers/HomeController.php(20): CodeIgniter\BaseModel->findAll()
+ 6 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\HomeController->index()
+ 7 SYSTEMPATH/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb()
+ERROR - 2026-07-23 11:37:50 --> Error connecting to the database: mysqli_sql_exception: Access denied for user 'u691843472_quiztv2'@'localhost' (using password: YES) in /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php:201
+Stack trace:
+#0 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php(201): mysqli->real_connect()
+#1 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect()
+#2 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+#3 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#4 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#5 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/BaseModel.php(675): CodeIgniter\Model->doFindAll()
+#6 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/app/Controllers/HomeController.php(20): CodeIgniter\BaseModel->findAll()
+#7 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(933): App\Controllers\HomeController->index()
+#8 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+#9 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+#10 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Boot.php(334): CodeIgniter\CodeIgniter->run()
+#11 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+#12 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/index.php(56): CodeIgniter\Boot::bootWeb()
+#13 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Access denied for user '****'@'localhost' (using password: YES) in /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/MySQLi/Connection.php:246
+Stack trace:
+#0 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect()
+#1 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+#2 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#3 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#4 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/BaseModel.php(675): CodeIgniter\Model->doFindAll()
+#5 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/app/Controllers/HomeController.php(20): CodeIgniter\BaseModel->findAll()
+#6 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(933): App\Controllers\HomeController->index()
+#7 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+#8 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+#9 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Boot.php(334): CodeIgniter\CodeIgniter->run()
+#10 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/vendor/codeigniter4/framework/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+#11 /home/u691843472/domains/newsexpress520.in/public_html/quiztv/index.php(56): CodeIgniter\Boot::bootWeb()
+#12 {main}
+CRITICAL - 2026-07-23 11:37:50 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Access denied for user '****'@'localhost' (using password: YES)
+[Method: GET, Route: /]
+in SYSTEMPATH/Database/BaseConnection.php on line 467.
+ 1 SYSTEMPATH/Database/BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+ 3 SYSTEMPATH/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(675): CodeIgniter\Model->doFindAll()
+ 5 APPPATH/Controllers/HomeController.php(20): CodeIgniter\BaseModel->findAll()
+ 6 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\HomeController->index()
+ 7 SYSTEMPATH/CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb()

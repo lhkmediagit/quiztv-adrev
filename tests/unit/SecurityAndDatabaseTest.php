@@ -1,6 +1,7 @@
 <?php
 
 use CodeIgniter\Test\CIUnitTestCase;
+use CodeIgniter\Test\DatabaseTestTrait;
 use CodeIgniter\Test\FeatureTestTrait;
 use App\Models\UserModel;
 use App\Models\AdSettingModel;
@@ -10,7 +11,12 @@ use App\Models\AdSettingModel;
  */
 final class SecurityAndDatabaseTest extends CIUnitTestCase
 {
+    use DatabaseTestTrait;
     use FeatureTestTrait;
+
+    protected $migrate   = true;
+    protected $refresh   = true;
+    protected $namespace = 'App';
 
     protected function setUp(): void
     {
@@ -51,11 +57,11 @@ final class SecurityAndDatabaseTest extends CIUnitTestCase
     {
         // Request to user dashboard route without logged-in session data
         $result = $this->call('get', 'user/dashboard');
-        $result->assertRedirectTo(base_url('login'));
+        $result->assertRedirectTo(site_url('login'));
 
         // Request to admin panel route without logged-in admin session data
         $resultAdmin = $this->call('get', 'admin');
-        $resultAdmin->assertRedirectTo(base_url('login'));
+        $resultAdmin->assertRedirectTo(site_url('login'));
     }
 
     /**

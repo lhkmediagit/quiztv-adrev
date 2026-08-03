@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="C:\xampp\htdocs\quizTv\phpunit.xml.dist" tests="14" assertions="49" errors="0" failures="0" skipped="0" time="13.339558">
+    <testsuite name="App" tests="14" assertions="49" errors="0" failures="0" skipped="0" time="13.339558">
+      <testsuite name="ExampleDatabaseTest" file="C:\xampp\htdocs\quizTv\tests\database\ExampleDatabaseTest.php" tests="2" assertions="3" errors="0" failures="0" skipped="0" time="1.456424">
+        <testcase name="testModelFindAll" file="C:\xampp\htdocs\quizTv\tests\database\ExampleDatabaseTest.php" line="17" class="ExampleDatabaseTest" classname="ExampleDatabaseTest" assertions="1" time="1.063389"/>
+        <testcase name="testSoftDeleteLeavesRow" file="C:\xampp\htdocs\quizTv\tests\database\ExampleDatabaseTest.php" line="28" class="ExampleDatabaseTest" classname="ExampleDatabaseTest" assertions="2" time="0.393035"/>
+      </testsuite>
+      <testsuite name="ExampleSessionTest" file="C:\xampp\htdocs\quizTv\tests\session\ExampleSessionTest.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.132509">
+        <testcase name="testSessionSimple" file="C:\xampp\htdocs\quizTv\tests\session\ExampleSessionTest.php" line="10" class="ExampleSessionTest" classname="ExampleSessionTest" assertions="1" time="0.132509"/>
+      </testsuite>
+      <testsuite name="AdsTxtTest" file="C:\xampp\htdocs\quizTv\tests\unit\AdsTxtTest.php" tests="2" assertions="5" errors="0" failures="0" skipped="0" time="3.393435">
+        <testcase name="testAdsTxtServingEnabled" file="C:\xampp\htdocs\quizTv\tests\unit\AdsTxtTest.php" line="23" class="AdsTxtTest" classname="AdsTxtTest" assertions="4" time="2.360758"/>
+        <testcase name="testAdsTxtServingDisabled" file="C:\xampp\htdocs\quizTv\tests\unit\AdsTxtTest.php" line="44" class="AdsTxtTest" classname="AdsTxtTest" assertions="1" time="1.032677"/>
+      </testsuite>
+      <testsuite name="HealthTest" file="C:\xampp\htdocs\quizTv\tests\unit\HealthTest.php" tests="2" assertions="3" errors="0" failures="0" skipped="0" time="0.852072">
+        <testcase name="testIsDefinedAppPath" file="C:\xampp\htdocs\quizTv\tests\unit\HealthTest.php" line="12" class="HealthTest" classname="HealthTest" assertions="1" time="0.001048"/>
+        <testcase name="testBaseUrlHasBeenSet" file="C:\xampp\htdocs\quizTv\tests\unit\HealthTest.php" line="17" class="HealthTest" classname="HealthTest" assertions="2" time="0.851023"/>
+      </testsuite>
+      <testsuite name="ScriptSettingsTest" file="C:\xampp\htdocs\quizTv\tests\unit\ScriptSettingsTest.php" tests="3" assertions="18" errors="0" failures="0" skipped="0" time="3.337531">
+        <testcase name="testScriptSettingsDatabaseModel" file="C:\xampp\htdocs\quizTv\tests\unit\ScriptSettingsTest.php" line="33" class="ScriptSettingsTest" classname="ScriptSettingsTest" assertions="12" time="1.249134"/>
+        <testcase name="testScriptSettingsHelper" file="C:\xampp\htdocs\quizTv\tests\unit\ScriptSettingsTest.php" line="69" class="ScriptSettingsTest" classname="ScriptSettingsTest" assertions="2" time="1.052803"/>
+        <testcase name="testScriptSettingsRoutesRegistered" file="C:\xampp\htdocs\quizTv\tests\unit\ScriptSettingsTest.php" line="94" class="ScriptSettingsTest" classname="ScriptSettingsTest" assertions="4" time="1.035594"/>
+      </testsuite>
+      <testsuite name="SecurityAndDatabaseTest" file="C:\xampp\htdocs\quizTv\tests\unit\SecurityAndDatabaseTest.php" tests="4" assertions="19" errors="0" failures="0" skipped="0" time="4.167587">
+        <testcase name="testPasswordEncryption" file="C:\xampp\htdocs\quizTv\tests\unit\SecurityAndDatabaseTest.php" line="35" class="SecurityAndDatabaseTest" classname="SecurityAndDatabaseTest" assertions="4" time="1.210623"/>
+        <testcase name="testAuthFiltersRedirect" file="C:\xampp\htdocs\quizTv\tests\unit\SecurityAndDatabaseTest.php" line="56" class="SecurityAndDatabaseTest" classname="SecurityAndDatabaseTest" assertions="4" time="1.082327"/>
+        <testcase name="testCacheControlHeaders" file="C:\xampp\htdocs\quizTv\tests\unit\SecurityAndDatabaseTest.php" line="70" class="SecurityAndDatabaseTest" classname="SecurityAndDatabaseTest" assertions="5" time="0.912430"/>
+        <testcase name="testAdSettingsStructure" file="C:\xampp\htdocs\quizTv\tests\unit\SecurityAndDatabaseTest.php" line="91" class="SecurityAndDatabaseTest" classname="SecurityAndDatabaseTest" assertions="6" time="0.962207"/>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>

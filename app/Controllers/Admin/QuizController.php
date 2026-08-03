@@ -55,6 +55,7 @@ class QuizController extends BaseController
             'duration_minutes' => 'required|integer',
             'difficulty'       => 'required|in_list[easy,medium,hard]',
             'is_active'        => 'permit_empty|integer',
+            'thumbnail_url'    => 'permit_empty|valid_url',
         ];
 
         if (!$this->validate($rules)) {
@@ -85,13 +86,13 @@ class QuizController extends BaseController
         // Handle thumbnail file upload
         $thumbnail = $this->request->getFile('thumbnail');
         if ($thumbnail && $thumbnail->isValid() && !$thumbnail->hasMoved()) {
-            $uploadPath = FCPATH . 'uploads/quizzes/';
-            if (!is_dir($uploadPath)) {
-                mkdir($uploadPath, 0777, true);
+            $thumbnailUrl = upload_to_docservice($thumbnail, 'quizhive/quizzes');
+            if ($thumbnailUrl === null) {
+                return redirect()->back()->withInput()->with('errors', ['thumbnail' => 'Failed to upload quiz thumbnail to Document Service.']);
             }
-            $newName = $thumbnail->getRandomName();
-            $thumbnail->move($uploadPath, $newName);
-            $data['thumbnail'] = base_url('uploads/quizzes/' . $newName);
+            $data['thumbnail'] = $thumbnailUrl;
+        } elseif ($this->request->getPost('thumbnail_url')) {
+            $data['thumbnail'] = trim($this->request->getPost('thumbnail_url'));
         }
 
         $quizModel->insert($data);
@@ -147,6 +148,7 @@ class QuizController extends BaseController
             'duration_minutes' => 'required|integer',
             'difficulty'       => 'required|in_list[easy,medium,hard]',
             'is_active'        => 'permit_empty|integer',
+            'thumbnail_url'    => 'permit_empty|valid_url',
         ];
 
         if (!$this->validate($rules)) {
@@ -166,22 +168,45 @@ class QuizController extends BaseController
         // Handle updated thumbnail file upload
         $thumbnail = $this->request->getFile('thumbnail');
         if ($thumbnail && $thumbnail->isValid() && !$thumbnail->hasMoved()) {
-            $uploadPath = FCPATH . 'uploads/quizzes/';
-            if (!is_dir($uploadPath)) {
-                mkdir($uploadPath, 0777, true);
+            $thumbnailUrl = upload_to_docservice($thumbnail, 'quizhive/quizzes');
+            if ($thumbnailUrl === null) {
+                return redirect()->back()->withInput()->with('errors', ['thumbnail' => 'Failed to upload quiz thumbnail to Document Service.']);
             }
-            $newName = $thumbnail->getRandomName();
-            $thumbnail->move($uploadPath, $newName);
 
-            // Delete old file
+            // Delete old file locally only if it was stored locally
             if ($quiz->thumbnail) {
-                $oldFilename = basename($quiz->thumbnail);
-                if (file_exists($uploadPath . $oldFilename)) {
-                    @unlink($uploadPath . $oldFilename);
+                $isLocal = str_contains($quiz->thumbnail, base_url('uploads/quizzes/'));
+                if ($isLocal) {
+                    $oldFilename = basename($quiz->thumbnail);
+                    $uploadPath = FCPATH . 'uploads/quizzes/';
+                    if (file_exists($uploadPath . $oldFilename)) {
+                        @unlink($uploadPath . $oldFilename);
+                    }
                 }
             }
 
-            $data['thumbnail'] = base_url('uploads/quizzes/' . $newName);
+            $data['thumbnail'] = $thumbnailUrl;
+        } else {
+            $thumbnailUrlInput = trim($this->request->getPost('thumbnail_url') ?? '');
+            if ($thumbnailUrlInput !== '') {
+                // Delete old file locally only if it was stored locally
+                if ($quiz->thumbnail && $quiz->thumbnail !== $thumbnailUrlInput) {
+                    $isLocal = str_contains($quiz->thumbnail, base_url('uploads/quizzes/'));
+                    if ($isLocal) {
+                        $oldFilename = basename($quiz->thumbnail);
+                        $uploadPath = FCPATH . 'uploads/quizzes/';
+                        if (file_exists($uploadPath . $oldFilename)) {
+                            @unlink($uploadPath . $oldFilename);
+                        }
+                    }
+                }
+                $data['thumbnail'] = $thumbnailUrlInput;
+            } else {
+                // If old thumbnail was an external URL, and it is now cleared, set to null
+                if ($quiz->thumbnail && (str_starts_with($quiz->thumbnail, 'http://') || str_starts_with($quiz->thumbnail, 'https://'))) {
+                    $data['thumbnail'] = null;
+                }
+            }
         }
 
         $quizModel->update($id, $data);
@@ -226,6 +251,21 @@ class QuizController extends BaseController
 
         $db = \Config\Database::connect();
         
+        // Clean up visual images of related questions first
+        $questions = $db->table('questions_and_options')->select('visual')->where('quiz_id', $id)->get()->getResult();
+        foreach ($questions as $q) {
+            if (!empty($q->visual)) {
+                if (preg_match('/src="([^"]+)"/', $q->visual, $matches)) {
+                    $src = $matches[1];
+                    $filename = basename($src);
+                    $filePath = FCPATH . 'uploads/questions/' . $filename;
+                    if (file_exists($filePath)) {
+                        @unlink($filePath);
+                    }
+                }
+            }
+        }
+
         // Delete related questions
         $db->table('questions_and_options')->where('quiz_id', $id)->delete();
 

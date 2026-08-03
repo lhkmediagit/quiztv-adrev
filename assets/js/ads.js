@@ -33,6 +33,25 @@
 
             // Load GPT library if not already present
             this._loadGPT(() => {
+                googletag.cmd.push(() => {
+                    googletag.pubads().addEventListener('slotRenderEnded', (event) => {
+                        const slotId = event.slot.getSlotElementId();
+                        const wrapper = document.getElementById(slotId + '-wrapper');
+                        if (wrapper) {
+                            if (event.isEmpty) {
+                                wrapper.setAttribute('data-ad-empty', 'true');
+                                wrapper.style.display = 'none';
+                            } else {
+                                wrapper.setAttribute('data-ad-empty', 'false');
+                                if (wrapper.getAttribute('data-ad-hide') === 'true') {
+                                    wrapper.style.display = 'none';
+                                } else {
+                                    wrapper.style.display = 'flex';
+                                }
+                            }
+                        }
+                    });
+                });
                 this._initAllBanners();
             });
         },
@@ -117,11 +136,6 @@
 
         _getResponsiveSizes(defaultWidth, defaultHeight) {
             const vw = window.innerWidth;
-            
-            // If the ad is a vertical skyscraper (e.g. sidebar skyscrapers)
-            if (defaultHeight > defaultWidth) {
-                return [[defaultWidth, defaultHeight], [120, 600]];
-            }
             
             // If the ad is a horizontal banner (leaderboard)
             if (defaultWidth >= 728) {

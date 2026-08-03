@@ -230,7 +230,7 @@
         }
 
         if (elements.resultRestartBtn) {
-            elements.resultRestartBtn.addEventListener('click', confirmRestart);
+            elements.resultRestartBtn.addEventListener('click', callRestart);
         }
 
         if (elements.confirmCancelBtn) {
@@ -305,6 +305,13 @@
                 
                 if (!name || !phone || !email) {
                     showToast('Please fill out all required fields.');
+                    return;
+                }
+
+                // Enforce exactly 10 digits for phone number
+                const phoneRegex = /^[0-9]{10}$/;
+                if (!phoneRegex.test(phone)) {
+                    showToast('Phone number must be exactly 10 digits.');
                     return;
                 }
 
@@ -451,18 +458,28 @@
         if (qNumSpan) {
             qNumSpan.textContent = questionsAnswered + 1;
         }
+        const qNumSpanMobile = document.getElementById('quiz-question-number-span-mobile');
+        if (qNumSpanMobile) {
+            qNumSpanMobile.textContent = questionsAnswered + 1;
+        }
 
-        // Render visual clue if present, otherwise fallback to quiz featured banner
+        // Render visual clue if present, otherwise show no image
         if (elements.visualContainer) {
-            if (q.visual) {
+            const visualWrapper = document.getElementById('quiz-visual-wrapper');
+            if (q.visual && q.visual !== 'none') {
                 elements.visualContainer.innerHTML = q.visual;
                 elements.visualContainer.style.display = 'block';
-            } else if (window.quizConfig && window.quizConfig.thumbnail) {
-                elements.visualContainer.innerHTML = `<img class="legacy-question-image" src="${window.quizConfig.thumbnail}" alt="Quiz illustration" />`;
-                elements.visualContainer.style.display = 'block';
+                if (visualWrapper) {
+                    visualWrapper.classList.remove('no-image');
+                    visualWrapper.style.display = 'block';
+                }
             } else {
                 elements.visualContainer.innerHTML = '';
                 elements.visualContainer.style.display = 'none';
+                if (visualWrapper) {
+                    visualWrapper.classList.add('no-image');
+                    visualWrapper.style.display = 'block';
+                }
             }
         }
 
@@ -495,12 +512,49 @@
         elements.nextBtn.style.display = 'none';
         if (elements.resultsBtn) elements.resultsBtn.style.display = 'none';
 
-        // Refresh ads dynamically once the card is visible
-        if (window.QuizTvAds && typeof window.QuizTvAds.refreshBanner === 'function') {
-            window.QuizTvAds.refreshBanner('gam-banner-play-mid');
-            window.QuizTvAds.refreshBanner('gam-banner-play-question');
-            window.QuizTvAds.refreshBanner('gam-banner-play-bottom');
+        // Hide ads on Question 1 and show/refresh them on subsequent questions
+        const midAdWrapper = document.getElementById('gam-banner-play-mid-wrapper');
+        const questionAdWrapper = document.getElementById('gam-banner-play-question-wrapper');
+        const bottomAdWrapper = document.getElementById('gam-banner-play-bottom-wrapper');
+
+        if (questionsAnswered === 0) {
+            if (midAdWrapper) {
+                midAdWrapper.setAttribute('data-ad-hide', 'true');
+                midAdWrapper.style.setProperty('display', 'none', 'important');
+            }
+            if (questionAdWrapper) {
+                questionAdWrapper.setAttribute('data-ad-hide', 'true');
+                questionAdWrapper.style.setProperty('display', 'none', 'important');
+            }
+            if (bottomAdWrapper) {
+                bottomAdWrapper.setAttribute('data-ad-hide', 'true');
+                bottomAdWrapper.style.setProperty('display', 'none', 'important');
+            }
+        } else {
+            if (midAdWrapper) {
+                midAdWrapper.removeAttribute('data-ad-hide');
+                midAdWrapper.style.display = 'flex';
+            }
+            if (questionAdWrapper) {
+                questionAdWrapper.removeAttribute('data-ad-hide');
+                questionAdWrapper.style.display = 'flex';
+            }
+            if (bottomAdWrapper) {
+                bottomAdWrapper.removeAttribute('data-ad-hide');
+                bottomAdWrapper.style.display = 'flex';
+            }
+
+            if (window.QuizTvAds && typeof window.QuizTvAds.refreshBanner === 'function') {
+                window.QuizTvAds.refreshBanner('gam-banner-play-mid');
+                window.QuizTvAds.refreshBanner('gam-banner-play-question');
+                window.QuizTvAds.refreshBanner('gam-banner-play-bottom');
+            }
         }
+
+        // Scroll smoothly back to the top of the entire page for the next question
+        setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 100);
     }
 
     /**
@@ -562,6 +616,13 @@
 
             // Keep playing: show manual navigation button (Next Question)
             elements.nextBtn.style.display = 'block';
+
+            // Scroll smoothly to next button so user doesn't have to scroll manually
+            setTimeout(() => {
+                if (elements.nextBtn) {
+                    elements.nextBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 100);
 
         } catch (err) {
             // Enable options back if failed to submit so they can try again
@@ -670,34 +731,21 @@
         if (elements.roundOverlay) elements.roundOverlay.style.display = 'none';
         if (elements.compactContainer) elements.compactContainer.style.display = 'none';
 
-        const proceedComplete = async () => {
-            // Show lead capture form overlay
-            const leadOverlay = document.getElementById('lead-overlay');
-            if (leadOverlay) {
-                leadOverlay.style.display = 'flex';
-            } else {
-                // Fallback if lead overlay not present
-                try {
-                    const data = await apiRequest('complete', {
-                        attempt_id: attemptId
-                    });
-                    renderResult(data);
-                } catch (err) {
-                    // Managed
-                }
-            }
-        };
-
-        const adConfig = window.quizConfig?.adConfig;
-        if (adConfig && adConfig.enabled && adConfig.interstitial && adConfig.interstitial.enabled && adConfig.interstitial.slot && window.QuizTvAds) {
-            QuizTvAds.showInterstitial(
-                adConfig.interstitial.slot,
-                () => {
-                    proceedComplete();
-                }
-            );
+        // Show lead capture form overlay immediately and scroll to top
+        const leadOverlay = document.getElementById('lead-overlay');
+        if (leadOverlay) {
+            leadOverlay.style.display = 'flex';
+            window.scrollTo(0, 0);
         } else {
-            proceedComplete();
+            // Fallback if lead overlay not present
+            try {
+                const data = await apiRequest('complete', {
+                    attempt_id: attemptId
+                });
+                renderResult(data);
+            } catch (err) {
+                // Managed
+            }
         }
     }
 
@@ -781,6 +829,7 @@
 
         // Display results overlay
         elements.resultOverlay.style.display = 'flex';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
 
         // Initialize the result banner ad dynamically
         const adConfig = window.quizConfig?.adConfig;
@@ -807,53 +856,32 @@
      * Restart current quiz state.
      */
     async function callRestart() {
-        elements.confirmOverlay.style.display = 'none';
-        elements.resultOverlay.style.display = 'none';
+        if (elements.confirmOverlay) elements.confirmOverlay.style.display = 'none';
+        if (elements.resultOverlay) elements.resultOverlay.style.display = 'none';
 
-        const proceedRestart = async () => {
-            try {
-                const data = await apiRequest('restart', {
-                    quiz_id: quizId,
-                    old_attempt_id: attemptId
-                });
+        try {
+            const data = await apiRequest('restart', {
+                quiz_id: quizId,
+                old_attempt_id: attemptId
+            });
 
-                attemptId = data.attempt_id;
-                totalQuestions = data.total_questions;
-                scoreSoFar = 0;
-                questionsAnswered = 0;
-                currentRound = 1;
-                roundStartScore = 0;
-                lives = 2;
-                updateLivesDisplay();
+            attemptId = data.attempt_id;
+            totalQuestions = data.total_questions;
+            scoreSoFar = 0;
+            questionsAnswered = 0;
+            currentRound = 1;
+            roundStartScore = 0;
+            lives = 2;
+            updateLivesDisplay();
 
-                // Reset progress
-                elements.progress.style.width = '0%';
-                elements.statusHeader.style.display = 'flex';
-                elements.cardContainer.style.display = 'flex';
+            // Reset progress
+            elements.progress.style.width = '0%';
+            if (elements.statusHeader) elements.statusHeader.style.display = 'flex';
+            if (elements.cardContainer) elements.cardContainer.style.display = 'flex';
 
-                renderQuestion(data.question);
-            } catch (err) {
-                // Managed
-            }
-        };
-
-        const adConfig = window.quizConfig?.adConfig;
-        if (adConfig && adConfig.enabled && adConfig.rewarded && adConfig.rewarded.enabled && adConfig.rewarded.slot && window.QuizTvAds) {
-            if (elements.confirmOkBtn) {
-                elements.confirmOkBtn.disabled = true;
-            }
-            QuizTvAds.showRewarded(
-                adConfig.rewarded.slot,
-                null,
-                () => {
-                    if (elements.confirmOkBtn) {
-                        elements.confirmOkBtn.disabled = false;
-                    }
-                    proceedRestart();
-                }
-            );
-        } else {
-            proceedRestart();
+            renderQuestion(data.question);
+        } catch (err) {
+            // Managed
         }
     }
 

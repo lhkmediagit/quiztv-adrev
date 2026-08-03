@@ -112,24 +112,24 @@ class DashboardController extends BaseController
         // Manage file upload for profile avatar
         $avatarFile = $this->request->getFile('avatar');
         if ($avatarFile && $avatarFile->isValid() && !$avatarFile->hasMoved()) {
-            // Check if directory exists
-            $uploadPath = FCPATH . 'uploads/avatars/';
-            if (!is_dir($uploadPath)) {
-                mkdir($uploadPath, 0777, true);
+            $avatarUrl = upload_to_docservice($avatarFile, 'quizhive/avatars');
+            if ($avatarUrl === null) {
+                return redirect()->back()->withInput()->with('errors', ['avatar' => 'Failed to upload avatar to Document Service.']);
             }
 
-            $newName = $avatarFile->getRandomName();
-            $avatarFile->move($uploadPath, $newName);
-
-            // Clean up old avatar image file
+            // Clean up old avatar image file locally ONLY if it was stored locally
             if ($user->avatar) {
-                $oldFilename = basename($user->avatar);
-                if (file_exists($uploadPath . $oldFilename)) {
-                    @unlink($uploadPath . $oldFilename);
+                $isLocal = str_contains($user->avatar, base_url('uploads/avatars/'));
+                if ($isLocal) {
+                    $oldFilename = basename($user->avatar);
+                    $uploadPath = FCPATH . 'uploads/avatars/';
+                    if (file_exists($uploadPath . $oldFilename)) {
+                        @unlink($uploadPath . $oldFilename);
+                    }
                 }
             }
 
-            $data['avatar'] = base_url('uploads/avatars/' . $newName);
+            $data['avatar'] = $avatarUrl;
         }
 
         $userModel->update($userId, $data);

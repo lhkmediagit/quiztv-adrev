@@ -61,15 +61,25 @@
         </div>
 
         <div class="form-group">
-            <label for="thumbnail" class="form-label">Thumbnail Image</label>
+            <label for="thumbnail" class="form-label">Thumbnail Image size - 16:9 (eg. 800*450)</label>
             <?php if ($quiz->thumbnail): ?>
-                <div class="form-current-thumbnail">
-                    <img src="<?= (str_starts_with($quiz->thumbnail, 'http://') || str_starts_with($quiz->thumbnail, 'https://')) ? esc($quiz->thumbnail) : base_url('uploads/quizzes/' . esc($quiz->thumbnail)) ?>" alt="Current Banner" class="admin-thumbnail-medium">
-                    <p class="form-help-text">Current thumbnail. Upload a new file below to replace it.</p>
+                <div class="form-current-thumbnail" style="margin-bottom: 12px;">
+                    <img src="<?= (str_starts_with($quiz->thumbnail, 'http://') || str_starts_with($quiz->thumbnail, 'https://')) ? esc($quiz->thumbnail) : base_url('uploads/quizzes/' . esc($quiz->thumbnail)) ?>" alt="Current Banner" class="admin-thumbnail-medium" style="max-height: 120px; border-radius: var(--radius-sm); border: 1px solid var(--border); display: block; margin-bottom: 6px;">
+                    <p class="form-help-text">Current thumbnail.</p>
                 </div>
             <?php endif; ?>
             <input type="file" name="thumbnail" id="thumbnail" accept="image/*" class="form-control-file">
-            <span class="form-help-text">Maximum file size: 2MB.</span>
+            <span class="form-help-text">Upload a new file from your device. Maximum file size: 2MB.</span>
+
+            <div style="display: flex; align-items: center; justify-content: center; margin: 12px 0;">
+                <span style="height: 1px; flex: 1; background-color: var(--border);"></span>
+                <span style="padding: 0 10px; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px;">OR</span>
+                <span style="height: 1px; flex: 1; background-color: var(--border);"></span>
+            </div>
+
+            <label for="thumbnail_url" class="form-label">Thumbnail URL</label>
+            <input type="url" name="thumbnail_url" id="thumbnail_url" class="form-control" value="<?= old('thumbnail_url', (str_starts_with($quiz->thumbnail, 'http://') || str_starts_with($quiz->thumbnail, 'https://')) ? $quiz->thumbnail : '') ?>" placeholder="https://example.com/image.jpg">
+            <span class="form-help-text">Or enter a direct URL to an external image.</span>
         </div>
 
         <!-- Recommended Quizzes panel -->

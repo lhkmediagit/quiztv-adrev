@@ -79,7 +79,7 @@ if (!function_exists('render_banner_slot')) {
             'quiz_sidebar'     => ['300', '250'],
             'play_question'    => ['300', '250'],
             'play_mid'         => ['300', '250'],
-            'play_result'      => ['300', '250'],
+            'play_result'      => ['336', '280'],
             'play_bottom'      => ['300', '250'],
             'left_skyscraper'  => ['160', '600'],
             'right_skyscraper' => ['160', '600'],
@@ -88,7 +88,7 @@ if (!function_exists('render_banner_slot')) {
         $size = $sizeMap[$position] ?? ['728', '90'];
         $divId = 'gam-banner-' . str_replace('_', '-', $position);
 
-        $html  = '<div class="ad-banner-container ' . esc($extraClass) . '" id="' . esc($divId) . '-wrapper">';
+        $html  = '<div class="ad-banner-container ' . esc($extraClass) . '" id="' . esc($divId) . '-wrapper" data-ad-empty="true">';
         $html .= '<span class="ad-label">Advertisement</span>';
         $html .= '<div id="' . esc($divId) . '" ';
         $html .= 'data-ad-slot="' . esc($slotPath) . '" ';
@@ -96,6 +96,7 @@ if (!function_exists('render_banner_slot')) {
         $html .= 'data-ad-height="' . esc($size[1]) . '" ';
         $html .= 'class="ad-banner-slot">';
         $html .= '</div>';
+        $html .='<div class="Advertisement_bottom__ROuWn" data-show-label="true"></div>';
         $html .= '</div>';
 
         return $html;

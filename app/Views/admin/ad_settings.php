@@ -211,6 +211,37 @@
             </div>
         </div>
 
+        <!-- ═══════════ ADS.TXT CONFIGURATION ═══════════ -->
+        <div class="settings-section">
+            <div class="section-heading">
+                <span class="section-icon">📝</span>
+                <div>
+                    <h3>ads.txt</h3>
+                    <p class="section-desc">Manage your authorized digital sellers list. This content is dynamically served at <a href="<?= site_url('ads.txt') ?>" target="_blank" style="color: var(--primary); text-decoration: underline;">/ads.txt</a>.</p>
+                </div>
+            </div>
+            <div class="settings-card">
+                <div class="form-row toggle-row">
+                    <div class="toggle-info">
+                        <label class="form-label-main">Enable ads.txt</label>
+                        <span class="form-hint">Enable dynamic serving of ads.txt. When disabled, the ads.txt page will return a 404 error.</span>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" name="ads_txt_enabled" value="1" <?= ($settings['ads_txt_enabled'] ?? '0') === '1' ? 'checked' : '' ?>>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <hr class="form-divider">
+
+                <div class="form-row">
+                    <label for="ads_txt_content" class="form-label">ads.txt Content</label>
+                    <textarea id="ads_txt_content" name="ads_txt_content" class="form-textarea" placeholder="google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0" style="min-height: 120px; font-family: monospace;"><?= esc($settings['ads_txt_content'] ?? '') ?></textarea>
+                    <span class="form-hint">Enter your ads.txt entries line by line.</span>
+                </div>
+            </div>
+        </div>
+
         <!-- Policy Info Box -->
         <div class="ad-policy-info">
             <h4>📋 GAM Policy Compliance Notes</h4>

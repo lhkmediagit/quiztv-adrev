@@ -49,13 +49,15 @@ class AdSettingsController extends BaseController
             'rewarded_message'       => 'trim',
             'interstitial_enabled'   => 'trim',
             'interstitial_slot'      => 'trim',
+            'ads_txt_enabled'        => 'trim',
+            'ads_txt_content'        => 'trim',
         ];
 
         foreach ($settingKeys as $key => $sanitizer) {
             $value = $this->request->getPost($key) ?? '';
 
             // Handle checkbox toggles (unchecked = not submitted)
-            if (in_array($key, ['ads_enabled', 'banner_enabled', 'rewarded_enabled', 'interstitial_enabled'])) {
+            if (in_array($key, ['ads_enabled', 'banner_enabled', 'rewarded_enabled', 'interstitial_enabled', 'ads_txt_enabled'])) {
                 $value = $this->request->getPost($key) ? '1' : '0';
             }
 
@@ -80,6 +82,30 @@ class AdSettingsController extends BaseController
             }
 
             $model->setSetting($key, $value);
+        }
+
+        // Manage physical ads.txt files so web servers can serve them statically (useful if mod_rewrite is disabled)
+        $adsTxtEnabled = $model->getSetting('ads_txt_enabled', '0');
+        $adsTxtContent = $model->getSetting('ads_txt_content', '');
+
+        $pathsToManage = [
+            ROOTPATH . 'ads.txt',
+            ROOTPATH . 'public/ads.txt',
+        ];
+
+        if ($adsTxtEnabled === '1') {
+            foreach ($pathsToManage as $path) {
+                $dir = dirname($path);
+                if (is_dir($dir)) {
+                    @file_put_contents($path, $adsTxtContent);
+                }
+            }
+        } else {
+            foreach ($pathsToManage as $path) {
+                if (is_file($path)) {
+                    @unlink($path);
+                }
+            }
         }
 
         return redirect()->to(site_url('admin/ad-settings'))
