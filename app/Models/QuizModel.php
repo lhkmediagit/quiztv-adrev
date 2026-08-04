@@ -29,6 +29,7 @@ class QuizModel extends Model
         'stages',
         'is_active',
         'created_by',
+        'about_quiz',
     ];
 
     // Dates

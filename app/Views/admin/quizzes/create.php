@@ -24,8 +24,14 @@
         </div>
 
         <div class="form-group">
-            <label for="description" class="form-label">Description</label>
-            <textarea name="description" id="description" class="form-control" rows="4" placeholder="Brief summary of what the quiz covers..." required><?= old('description') ?></textarea>
+            <label for="description" class="form-label">Short Description</label>
+            <textarea name="description" id="description" class="form-control" rows="3" placeholder="Brief summary of what the quiz covers..." required><?= old('description') ?></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="about_quiz" class="form-label">About the Quiz (Detailed Background)</label>
+            <textarea name="about_quiz" id="about_quiz" class="form-control" rows="4" placeholder="Detailed background and info about this quiz..."><?= old('about_quiz') ?></textarea>
+            <span class="form-help-text">Displayed under the "About the quiz" section on the play page. Defaults to short description if empty.</span>
         </div>
 
         <div class="form-row">

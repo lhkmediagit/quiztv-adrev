@@ -50,6 +50,7 @@ class QuizController extends BaseController
         $rules = [
             'title'            => 'required|min_length[3]|max_length[255]',
             'description'      => 'required',
+            'about_quiz'       => 'permit_empty',
             'category_id'      => 'required|integer',
             'pass_rate'        => 'required|decimal',
             'duration_minutes' => 'required|integer',
@@ -62,6 +63,7 @@ class QuizController extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
+        $this->ensureAboutQuizColumnExists();
         $quizModel = new QuizModel();
 
         // Auto generate URL slug from title
@@ -75,6 +77,7 @@ class QuizController extends BaseController
             'title'            => $this->request->getPost('title'),
             'slug'             => $slug,
             'description'      => $this->request->getPost('description'),
+            'about_quiz'       => $this->request->getPost('about_quiz'),
             'category_id'      => (int)$this->request->getPost('category_id'),
             'pass_rate'        => (float)$this->request->getPost('pass_rate'),
             'duration_minutes' => (int)$this->request->getPost('duration_minutes'),
@@ -143,6 +146,7 @@ class QuizController extends BaseController
         $rules = [
             'title'            => 'required|min_length[3]|max_length[255]',
             'description'      => 'required',
+            'about_quiz'       => 'permit_empty',
             'category_id'      => 'required|integer',
             'pass_rate'        => 'required|decimal',
             'duration_minutes' => 'required|integer',
@@ -155,9 +159,12 @@ class QuizController extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
+        $this->ensureAboutQuizColumnExists();
+
         $data = [
             'title'            => $this->request->getPost('title'),
             'description'      => $this->request->getPost('description'),
+            'about_quiz'       => $this->request->getPost('about_quiz'),
             'category_id'      => (int)$this->request->getPost('category_id'),
             'pass_rate'        => (float)$this->request->getPost('pass_rate'),
             'duration_minutes' => (int)$this->request->getPost('duration_minutes'),
@@ -283,5 +290,24 @@ class QuizController extends BaseController
         $quizModel->delete($id);
 
         return redirect()->to('/admin/quizzes')->with('success', 'Quiz configuration and all associated question details and play history deleted.');
+    }
+
+    /**
+     * Helper method to ensure the about_quiz column exists in quizzes table.
+     */
+    private function ensureAboutQuizColumnExists()
+    {
+        static $checked = false;
+        if ($checked) return;
+        $checked = true;
+
+        try {
+            $db = \Config\Database::connect();
+            if (!$db->fieldExists('about_quiz', 'quizzes')) {
+                $db->query("ALTER TABLE quizzes ADD COLUMN about_quiz TEXT NULL AFTER description");
+            }
+        } catch (\Throwable $e) {
+            // Ignore if column check fails or exists
+        }
     }
 }

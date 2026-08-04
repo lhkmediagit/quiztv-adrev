@@ -87,21 +87,27 @@
                 <!-- Ad: Mobile Bottom (300x250) — hidden on desktop -->
                 <?= render_banner_slot('bottom_mobile', 'mobile-only') ?>
 
-                <!-- Custom Stats Box (QuizTv Slug Only) -->
-                <?php if ($quiz->slug === 'quiztv'): ?>
-                    <div class="ndtv-stats-header" style="border-top: 1.5px solid var(--border); padding-top: 24px; margin-top: 20px;">
-                        <div class="ndtv-stats-item">
-                            <p style="margin: 0; font-weight: 500; font-style: italic; color: #64748b;">More than</p>
-                            <h2>21074</h2>
-                            <p style="margin: 0; font-weight: 600; color: #334155;">Have Played this quiz</p>
-                        </div>
-                        <div class="ndtv-stats-divider">
-                            <p style="margin: 0; font-weight: 500; font-style: italic; color: #64748b;">Just</p>
-                            <h2>285</h2>
-                            <p style="margin: 0; font-weight: 600; color: #334155;">Are Smarter (for now)</p>
-                        </div>
+                <!-- NDTV-style Stats Header (Shown across all quizzes) -->
+                <div class="ndtv-stats-header" style="border-top: 1.5px solid var(--border); padding-top: 24px; margin-top: 20px;">
+                    <div class="ndtv-stats-item">
+                        <p style="margin: 0; font-weight: 500; font-style: italic; color: #64748b;">More than</p>
+                        <h2>21074</h2>
+                        <p style="margin: 0; font-weight: 600; color: #334155;">Have Played this quiz</p>
                     </div>
-                <?php endif; ?>
+                    <div class="ndtv-stats-divider">
+                        <p style="margin: 0; font-weight: 500; font-style: italic; color: #64748b;">Just</p>
+                        <h2>285</h2>
+                        <p style="margin: 0; font-weight: 600; color: #334155;">Are Smarter (for now)</p>
+                    </div>
+                </div>
+
+                <!-- NDTV-style About the quiz section -->
+                <div class="ndtv-about-quiz-section" style="border-top: 1.5px solid var(--border); padding-top: 24px; margin-top: 24px; text-align: left;">
+                    <h3 style="font-size: 22px; font-weight: 700; font-family: 'Poppins', sans-serif; margin-bottom: 12px; color: #1e293b;">About the quiz</h3>
+                    <p style="font-size: 15px; color: #475569; line-height: 1.6; margin: 0; font-family: 'Inter', sans-serif;">
+                        <?= nl2br(esc(!empty($quiz->about_quiz) ? $quiz->about_quiz : $quiz->description)) ?>
+                    </p>
+                </div>
             </div>
         </div>
 

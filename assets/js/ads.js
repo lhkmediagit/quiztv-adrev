@@ -324,7 +324,8 @@
          */
         _defineSlot(slotPath, divId, width, height) {
             try {
-                const slot = googletag.defineSlot(slotPath, [width, height], divId);
+                const sizes = this._getAllowedSizes(width, height);
+                const slot = googletag.defineSlot(slotPath, sizes, divId);
                 if (slot) {
                     // Add responsive size mapping (NDTV pattern)
                     const mapping = this._buildSizeMapping(width, height);
@@ -341,6 +342,26 @@
         },
 
         /**
+         * Get all allowed size dimensions for a slot type.
+         * Required by GPT so sizeMapping includes all possible fill sizes.
+         */
+        _getAllowedSizes(width, height) {
+            if (width === 160 && height === 600) {
+                return [[160, 600], [300, 600], [300, 250]];
+            }
+            if (width >= 728) {
+                return [[728, 90], [970, 90], [468, 60], [320, 50], [300, 50], [300, 250]];
+            }
+            if ((width === 336 && height === 280) || (width === 300 && height === 250)) {
+                return [[336, 280], [300, 250], [300, 200]];
+            }
+            if (width === 320 && height === 50) {
+                return [[320, 50], [300, 50], [300, 250]];
+            }
+            return [[width, height], [300, 250]];
+        },
+
+        /**
          * Build NDTV-style responsive size mapping for a slot.
          */
         _buildSizeMapping(width, height) {
@@ -348,7 +369,7 @@
                 // Skyscraper (160x600) — show only on wide desktop
                 if (width === 160 && height === 600) {
                     return googletag.sizeMapping()
-                        .addSize([1200, 0], [160, 600])
+                        .addSize([1200, 0], [[160, 600], [300, 600], [300, 250]])
                         .addSize([0, 0], [])
                         .build();
                 }
@@ -356,9 +377,9 @@
                 // Leaderboard (728x90) — responsive
                 if (width >= 728) {
                     return googletag.sizeMapping()
-                        .addSize([728, 0], [728, 90])
+                        .addSize([728, 0], [[728, 90], [970, 90], [300, 250]])
                         .addSize([468, 0], [[468, 60], [320, 50]])
-                        .addSize([0, 0], [[320, 50], [300, 50]])
+                        .addSize([0, 0], [[320, 50], [300, 50], [300, 250]])
                         .build();
                 }
 
@@ -374,7 +395,7 @@
                 if (width === 320 && height === 50) {
                     return googletag.sizeMapping()
                         .addSize([1024, 0], [])
-                        .addSize([0, 0], [[320, 50], [300, 50]])
+                        .addSize([0, 0], [[320, 50], [300, 50], [300, 250]])
                         .build();
                 }
 
