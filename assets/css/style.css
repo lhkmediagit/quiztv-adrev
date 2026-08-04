@@ -151,8 +151,7 @@ html, body {
 }
 
 /* Ad-collapsed state — NDTV empty-fill collapse */
-.ad-banner-container.ad-collapsed,
-.ad-banner-container[data-ad-empty="true"] {
+.ad-banner-container.ad-collapsed {
     min-height: 0 !important;
     height: 0 !important;
     padding: 0 !important;
@@ -160,9 +159,10 @@ html, body {
     border: none !important;
     visibility: hidden !important;
     overflow: hidden !important;
+    display: none !important;
 }
 
-/* When ad fills, remove collapse */
+/* When ad fills, ensure visibility */
 .ad-banner-container[data-ad-empty="false"] {
     visibility: visible !important;
     height: auto !important;

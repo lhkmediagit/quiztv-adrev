@@ -112,7 +112,7 @@ if (!function_exists('render_banner_slot')) {
         $size = $sizeMap[$position] ?? ['728', '90'];
         $divId = 'gam-banner-' . str_replace('_', '-', $position);
 
-        $html  = '<div class="ad-banner-container ' . esc($extraClass) . '" id="' . esc($divId) . '-wrapper" data-ad-empty="true" data-ad-id="' . esc($position) . '">';
+        $html  = '<div class="ad-banner-container ' . esc($extraClass) . '" id="' . esc($divId) . '-wrapper" data-ad-id="' . esc($position) . '">';
         $html .= '<span class="ad-label">Advertisement</span>';
         $html .= '<div id="' . esc($divId) . '" ';
         $html .= 'data-ad-slot="' . esc($slotPath) . '" ';

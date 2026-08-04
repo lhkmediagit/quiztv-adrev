@@ -179,6 +179,10 @@
 
             // Load GPT library if not already present
             this._loadGPT(() => {
+                googletag.cmd.push(() => {
+                    googletag.pubads().enableSingleRequest();
+                    googletag.pubads().collapseEmptyDivs(true);
+                });
                 this._setupRewardedListeners();
                 this._initAllBanners();
             });
