@@ -43,7 +43,131 @@ html, body {
     width: stretch;
     background-color: #c9c9c9;
     margin: 10px 0px 10px 0px;
-                    }
+}
+
+/* ==========================================================================
+   NDTV-STYLE AD CONTAINER SYSTEM
+   Responsive visibility, collapse, sticky anchors, and labeling.
+   ========================================================================== */
+
+/* Ad banner container — flex column, centered */
+.ad-banner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 8px auto;
+    box-sizing: border-box;
+}
+
+/* "ADVERTISEMENT" label above ad slots */
+.ad-label {
+    display: block;
+    font-size: 9px;
+    font-weight: 700;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 4px;
+    text-align: center;
+    line-height: 1;
+}
+
+/* Inner ad slot div */
+.ad-banner-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive visibility classes — NDTV breakpoints */
+.desktop-only {
+    display: none !important;
+}
+@media (min-width: 1024px) {
+    .desktop-only {
+        display: flex !important;
+    }
+    .mobile-only {
+        display: none !important;
+    }
+}
+
+/* Hide-above / hide-below helpers (NDTV-style) */
+.hide-above-1024 {
+    display: flex;
+}
+@media (min-width: 1024px) {
+    .hide-above-1024 {
+        display: none !important;
+    }
+}
+
+/* Sticky bottom mobile anchor ad — fixed to viewport bottom */
+.sticky-bottom-ad {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background-color: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4px 0;
+}
+@media (min-width: 1024px) {
+    .sticky-bottom-ad {
+        display: none !important;
+    }
+}
+
+/* Sticky top mobile banner */
+.sticky-top-ad {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4px 0;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+}
+@media (min-width: 1024px) {
+    .sticky-top-ad {
+        display: none !important;
+    }
+}
+
+/* Spacer div to prevent content behind sticky bottom ad */
+.sticky-bottom-spacer {
+    height: 60px;
+}
+@media (min-width: 1024px) {
+    .sticky-bottom-spacer {
+        display: none !important;
+    }
+}
+
+/* Ad-collapsed state — NDTV empty-fill collapse */
+.ad-banner-container.ad-collapsed,
+.ad-banner-container[data-ad-empty="true"] {
+    min-height: 0 !important;
+    height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    visibility: hidden !important;
+    overflow: hidden !important;
+}
+
+/* When ad fills, remove collapse */
+.ad-banner-container[data-ad-empty="false"] {
+    visibility: visible !important;
+    height: auto !important;
+    overflow: visible !important;
+}
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;

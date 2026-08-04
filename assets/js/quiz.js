@@ -512,43 +512,22 @@
         elements.nextBtn.style.display = 'none';
         if (elements.resultsBtn) elements.resultsBtn.style.display = 'none';
 
-        // Hide ads on Question 1 and show/refresh them on subsequent questions
-        const midAdWrapper = document.getElementById('gam-banner-play-mid-wrapper');
-        const questionAdWrapper = document.getElementById('gam-banner-play-question-wrapper');
-        const bottomAdWrapper = document.getElementById('gam-banner-play-bottom-wrapper');
-
-        if (questionsAnswered === 0) {
-            if (midAdWrapper) {
-                midAdWrapper.setAttribute('data-ad-hide', 'true');
-                midAdWrapper.style.setProperty('display', 'none', 'important');
-            }
-            if (questionAdWrapper) {
-                questionAdWrapper.setAttribute('data-ad-hide', 'true');
-                questionAdWrapper.style.setProperty('display', 'none', 'important');
-            }
-            if (bottomAdWrapper) {
-                bottomAdWrapper.setAttribute('data-ad-hide', 'true');
-                bottomAdWrapper.style.setProperty('display', 'none', 'important');
-            }
-        } else {
-            if (midAdWrapper) {
-                midAdWrapper.removeAttribute('data-ad-hide');
-                midAdWrapper.style.display = 'flex';
-            }
-            if (questionAdWrapper) {
-                questionAdWrapper.removeAttribute('data-ad-hide');
-                questionAdWrapper.style.display = 'flex';
-            }
-            if (bottomAdWrapper) {
-                bottomAdWrapper.removeAttribute('data-ad-hide');
-                bottomAdWrapper.style.display = 'flex';
-            }
-
-            if (window.QuizTvAds && typeof window.QuizTvAds.refreshBanner === 'function') {
-                window.QuizTvAds.refreshBanner('gam-banner-play-mid');
-                window.QuizTvAds.refreshBanner('gam-banner-play-question');
-                window.QuizTvAds.refreshBanner('gam-banner-play-bottom');
-            }
+        // Refresh ads on question navigation (NDTV pattern)
+        if (questionsAnswered > 0 && window.QuizTvAds && typeof window.QuizTvAds.refreshAllAds === 'function') {
+            const isDesktop = window.innerWidth >= 1024;
+            const slotsToRefresh = isDesktop ? [
+                'gam-banner-middle-desktop',
+                'gam-banner-bottom-desktop',
+                'gam-banner-left-rail',
+                'gam-banner-right-rail'
+            ] : [
+                'gam-banner-middle-mobile',
+                'gam-banner-bottom-top-mobile',
+                'gam-banner-bottom-mobile',
+                'gam-banner-sticky-bottom-mobile',
+                'gam-banner-sticky-top-mobile'
+            ];
+            window.QuizTvAds.refreshAllAds(slotsToRefresh);
         }
 
         // Scroll smoothly back to the top of the entire page for the next question
@@ -702,19 +681,17 @@
                 };
 
                 const adConfig = window.quizConfig?.adConfig;
-                if (adConfig && adConfig.enabled && adConfig.rewarded && adConfig.rewarded.enabled && adConfig.rewarded.slot && window.QuizTvAds) {
+                if (adConfig && adConfig.enabled && adConfig.rewarded && adConfig.rewarded.enabled && typeof window.triggerRewardedAd === 'function') {
                     elements.roundBtn.disabled = true;
                     elements.roundBtn.textContent = 'Loading Ad...';
 
-                    QuizTvAds.showRewarded(
-                        adConfig.rewarded.slot,
-                        null,
-                        () => {
-                            elements.roundBtn.disabled = false;
-                            elements.roundBtn.textContent = 'Continue to Next Round';
-                            proceedContinue();
-                        }
-                    );
+                    window.onRewardedAdFinished = function(result) {
+                        elements.roundBtn.disabled = false;
+                        elements.roundBtn.textContent = 'Continue to Next Round';
+                        proceedContinue();
+                    };
+
+                    window.triggerRewardedAd();
                 } else {
                     proceedContinue();
                 }

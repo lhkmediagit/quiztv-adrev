@@ -1,8 +1,14 @@
 /**
- * QuizTv Ads Module
- * Centralized Google Ad Manager (GPT) integration.
- * Handles banner ad initialization, refresh, rewarded ads, and cleanup.
- * Adheres to GAM policies: min 30s refresh, user-initiated rewarded ads, proper labeling.
+ * QuizTv Ads Module — NDTV Trivia Architecture
+ * =============================================
+ * Centralized Google Ad Manager (GPT) integration matching
+ * NDTV Trivia's exact ad flow:
+ *
+ * BANNERS:  enableSingleRequest + collapseEmptyDivs + responsive sizeMapping
+ * REFRESH:  refreshAllAds(slotKeys) on question navigation
+ * COLLAPSE: slotRenderEnded → data-ad-empty toggle + ad-collapsed class
+ * REWARDED: triggerRewardedAd() / onRewardedAdFinished(result) globals
+ *           with dual timeouts (GPT startup + ad response)
  */
 
 (function () {
@@ -11,12 +17,147 @@
     // Prevent double-init
     if (window.QuizTvAds) return;
 
+    // ========================================================================
+    // REWARDED AD SYSTEM (NDTV-style globals)
+    // Standalone module — separate from banner management
+    // ========================================================================
+    var GPT_STARTUP_FALLBACK_TIMEOUT = 8000;  // 8s for GPT to process cmd
+    var AD_RESPONSE_TIMEOUT = 10000;          // 10s for ad fill
+
+    var rewardedSlot = null;
+    var rewardAdEvent = null;
+    var rewardGranted = false;
+    var adResponseTimeout = null;
+    var gptStartupFallbackTimeout = null;
+    var flowFinished = false;
+    var rewardedAdUnitPath = '';  // Set from config during init
+
+    function clearAdResponseTimeout() {
+        clearTimeout(adResponseTimeout);
+        adResponseTimeout = null;
+    }
+
+    function clearGptStartupFallback() {
+        clearTimeout(gptStartupFallbackTimeout);
+        gptStartupFallbackTimeout = null;
+    }
+
+    function finishRewardFlow(result) {
+        if (flowFinished) {
+            return;
+        }
+
+        flowFinished = true;
+        clearAdResponseTimeout();
+        clearGptStartupFallback();
+
+        if (typeof window.onRewardedAdFinished === 'function') {
+            try {
+                window.onRewardedAdFinished(result);
+            } catch (err) {
+                // The reward flow is already finished.
+            }
+        }
+    }
+
+    /**
+     * NDTV-style triggerRewardedAd() — global function
+     * Called from quiz.js when user needs to watch a rewarded ad
+     */
+    function triggerRewardedAd() {
+        rewardGranted = false;
+        rewardAdEvent = null;
+        flowFinished = false;
+
+        clearAdResponseTimeout();
+        clearGptStartupFallback();
+
+        // Covers only cases where GPT never loads or processes the command.
+        gptStartupFallbackTimeout = setTimeout(function () {
+            finishRewardFlow({
+                status: 'timeout',
+                rewardGranted: false,
+                reason: 'gpt_startup_timeout'
+            });
+        }, GPT_STARTUP_FALLBACK_TIMEOUT);
+
+        window.googletag.cmd.push(function () {
+            clearGptStartupFallback();
+
+            if (flowFinished) {
+                return;
+            }
+
+            // Destroy previous slot if exists
+            if (rewardedSlot) {
+                googletag.destroySlots([rewardedSlot]);
+                rewardedSlot = null;
+            }
+
+            rewardedSlot = googletag.defineOutOfPageSlot(
+                rewardedAdUnitPath,
+                googletag.enums.OutOfPageFormat.REWARDED
+            );
+
+            if (!rewardedSlot) {
+                finishRewardFlow({
+                    status: 'failed',
+                    rewardGranted: false,
+                    reason: 'slot_definition_failed'
+                });
+                return;
+            }
+
+            rewardedSlot.addService(googletag.pubads());
+
+            // Covers no-fill or missing GPT ad response after startup.
+            adResponseTimeout = setTimeout(function () {
+                finishRewardFlow({
+                    status: 'timeout',
+                    rewardGranted: false,
+                    reason: 'ad_response_timeout'
+                });
+            }, AD_RESPONSE_TIMEOUT);
+
+            googletag.pubads().refresh([rewardedSlot]);
+        });
+    }
+
+    function showRewardAd() {
+        if (!rewardAdEvent) {
+            return;
+        }
+
+        clearAdResponseTimeout();
+        clearGptStartupFallback();
+
+        try {
+            rewardAdEvent.makeRewardedVisible();
+        } catch (err) {
+            finishRewardFlow({
+                status: 'failed',
+                rewardGranted: false,
+                reason: 'make_visible_failed'
+            });
+        }
+
+        rewardAdEvent = null;
+    }
+
+    // Expose rewarded globals (NDTV pattern)
+    window.triggerRewardedAd = triggerRewardedAd;
+
+    // ========================================================================
+    // BANNER AD SYSTEM
+    // ========================================================================
+
     const QuizTvAds = {
         initialized: false,
-        slots: {},
+        slots: {},           // divId -> googletag.Slot
         refreshTimers: {},
         lastRefreshTime: {},
         config: null,
+        rewardedListenersSetup: false,
 
         /**
          * Initialize the ads system with configuration from the server.
@@ -31,27 +172,14 @@
             this.config = adConfig;
             this.initialized = true;
 
+            // Store rewarded ad unit path for the global triggerRewardedAd function
+            if (adConfig.rewarded && adConfig.rewarded.slot) {
+                rewardedAdUnitPath = adConfig.rewarded.slot;
+            }
+
             // Load GPT library if not already present
             this._loadGPT(() => {
-                googletag.cmd.push(() => {
-                    googletag.pubads().addEventListener('slotRenderEnded', (event) => {
-                        const slotId = event.slot.getSlotElementId();
-                        const wrapper = document.getElementById(slotId + '-wrapper');
-                        if (wrapper) {
-                            if (event.isEmpty) {
-                                wrapper.setAttribute('data-ad-empty', 'true');
-                                wrapper.style.display = 'none';
-                            } else {
-                                wrapper.setAttribute('data-ad-empty', 'false');
-                                if (wrapper.getAttribute('data-ad-hide') === 'true') {
-                                    wrapper.style.display = 'none';
-                                } else {
-                                    wrapper.style.display = 'flex';
-                                }
-                            }
-                        }
-                    });
-                });
+                this._setupRewardedListeners();
                 this._initAllBanners();
             });
         },
@@ -81,6 +209,82 @@
         },
 
         /**
+         * Setup rewarded ad event listeners (once only).
+         * NDTV-style: rewardedSlotReady, rewardedSlotGranted, rewardedSlotClosed,
+         * slotRenderEnded (for rewarded empty check)
+         */
+        _setupRewardedListeners() {
+            if (this.rewardedListenersSetup) return;
+            this.rewardedListenersSetup = true;
+
+            googletag.cmd.push(() => {
+                // SRA + collapse
+                googletag.pubads().enableSingleRequest();
+                googletag.pubads().collapseEmptyDivs(true);
+
+                // Rewarded slot ready — store event and auto-show
+                googletag.pubads().addEventListener('rewardedSlotReady', function (event) {
+                    if (!rewardedSlot || event.slot !== rewardedSlot) {
+                        return;
+                    }
+                    rewardAdEvent = event;
+                    showRewardAd();
+                });
+
+                // Rewarded slot granted — user earned the reward
+                googletag.pubads().addEventListener('rewardedSlotGranted', function (event) {
+                    if (!rewardedSlot || event.slot !== rewardedSlot) {
+                        return;
+                    }
+                    rewardGranted = true;
+                });
+
+                // Rewarded slot closed — finalize flow
+                googletag.pubads().addEventListener('rewardedSlotClosed', function (event) {
+                    if (!rewardedSlot || event.slot !== rewardedSlot) {
+                        return;
+                    }
+                    finishRewardFlow({
+                        status: rewardGranted ? 'granted' : 'closed',
+                        rewardGranted: rewardGranted,
+                        reason: rewardGranted ? 'reward_granted' : 'user_closed_early'
+                    });
+                });
+
+                // SlotRenderEnded — handle banner collapse AND rewarded empty check
+                googletag.pubads().addEventListener('slotRenderEnded', (event) => {
+                    const slotId = event.slot.getSlotElementId();
+
+                    // Check if this is the rewarded slot
+                    if (rewardedSlot && event.slot === rewardedSlot) {
+                        if (event.isEmpty) {
+                            finishRewardFlow({
+                                status: 'failed',
+                                rewardGranted: false,
+                                reason: 'no_fill'
+                            });
+                        }
+                        return;
+                    }
+
+                    // Banner ad collapse handling (NDTV pattern)
+                    const wrapper = document.getElementById(slotId + '-wrapper');
+                    if (wrapper) {
+                        if (event.isEmpty) {
+                            wrapper.setAttribute('data-ad-empty', 'true');
+                            wrapper.classList.add('ad-collapsed');
+                            wrapper.style.display = 'none';
+                        } else {
+                            wrapper.setAttribute('data-ad-empty', 'false');
+                            wrapper.classList.remove('ad-collapsed');
+                            wrapper.style.display = 'flex';
+                        }
+                    }
+                });
+            });
+        },
+
+        /**
          * Scan the page for all ad banner slot divs and initialize them.
          */
         _initAllBanners() {
@@ -99,9 +303,6 @@
                     this._defineSlot(slotPath, divId, width, height);
                 });
 
-                // Enable SRA (Single Request Architecture) for better performance
-                googletag.pubads().enableSingleRequest();
-                googletag.pubads().collapseEmptyDivs();
                 googletag.enableServices();
 
                 // Display all defined slots
@@ -115,44 +316,67 @@
         },
 
         /**
-         * Define a single GPT ad slot.
+         * Define a single GPT ad slot with NDTV-style responsive sizeMapping.
          */
         _defineSlot(slotPath, divId, width, height) {
             try {
-                const size = this.config.banner.size === 'responsive'
-                    ? this._getResponsiveSizes(width, height)
-                    : [[width, height]];
-
-                const slot = googletag.defineSlot(slotPath, size, divId);
+                const slot = googletag.defineSlot(slotPath, [width, height], divId);
                 if (slot) {
+                    // Add responsive size mapping (NDTV pattern)
+                    const mapping = this._buildSizeMapping(width, height);
+                    if (mapping) {
+                        slot.defineSizeMapping(mapping);
+                    }
                     slot.addService(googletag.pubads());
                     this.slots[divId] = slot;
-                    this.lastRefreshTime[divId] = 0; // Initialize to 0 so the first dynamic refresh is not throttled
+                    this.lastRefreshTime[divId] = 0;
                 }
             } catch (e) {
                 console.warn('[QuizTvAds] Error defining slot:', divId, e);
             }
         },
 
-        _getResponsiveSizes(defaultWidth, defaultHeight) {
-            const vw = window.innerWidth;
-            
-            // If the ad is a horizontal banner (leaderboard)
-            if (defaultWidth >= 728) {
-                if (vw < 480) {
-                    return [[320, 50], [300, 50]];
-                } else if (vw < 768) {
-                    return [[468, 60], [320, 50]];
-                } else {
-                    return [[728, 90], [468, 60]];
+        /**
+         * Build NDTV-style responsive size mapping for a slot.
+         */
+        _buildSizeMapping(width, height) {
+            try {
+                // Skyscraper (160x600) — show only on wide desktop
+                if (width === 160 && height === 600) {
+                    return googletag.sizeMapping()
+                        .addSize([1200, 0], [160, 600])
+                        .addSize([0, 0], [])
+                        .build();
                 }
-            }
-            
-            // If the ad is a square / rectangle (e.g. sidebar, results screen)
-            if (vw < 480) {
-                return [[300, 250]];
-            } else {
-                return [[defaultWidth, defaultHeight], [300, 250], [336, 280]];
+
+                // Leaderboard (728x90) — responsive
+                if (width >= 728) {
+                    return googletag.sizeMapping()
+                        .addSize([728, 0], [728, 90])
+                        .addSize([468, 0], [[468, 60], [320, 50]])
+                        .addSize([0, 0], [[320, 50], [300, 50]])
+                        .build();
+                }
+
+                // Medium rectangle (336x280 or 300x250)
+                if ((width === 336 && height === 280) || (width === 300 && height === 250)) {
+                    return googletag.sizeMapping()
+                        .addSize([768, 0], [[336, 280], [300, 250]])
+                        .addSize([0, 0], [[300, 250]])
+                        .build();
+                }
+
+                // Sticky banners (320x50) — mobile only
+                if (width === 320 && height === 50) {
+                    return googletag.sizeMapping()
+                        .addSize([1024, 0], [])
+                        .addSize([0, 0], [[320, 50], [300, 50]])
+                        .build();
+                }
+
+                return null;
+            } catch (e) {
+                return null;
             }
         },
 
@@ -183,6 +407,45 @@
         },
 
         /**
+         * NDTV-style refreshAllAds — refresh specific slots by div ID array.
+         * Called on question navigation.
+         *
+         * @param {string[]} [divIds] - Optional array of div IDs to refresh. Refreshes all if omitted.
+         */
+        refreshAllAds(divIds) {
+            if (!this.initialized) return;
+
+            googletag.cmd.push(() => {
+                const now = Date.now();
+                const minInterval = 30000; // GAM 30s minimum
+
+                let slotsToRefresh;
+
+                if (divIds && Array.isArray(divIds)) {
+                    slotsToRefresh = divIds
+                        .map(id => this.slots[id])
+                        .filter(slot => !!slot);
+                } else {
+                    slotsToRefresh = Object.values(this.slots);
+                }
+
+                // Filter by 30s throttle
+                slotsToRefresh = slotsToRefresh.filter(slot => {
+                    const divId = slot.getSlotElementId();
+                    const last = this.lastRefreshTime[divId] || 0;
+                    return (now - last) >= minInterval;
+                });
+
+                if (slotsToRefresh.length > 0) {
+                    googletag.pubads().refresh(slotsToRefresh);
+                    slotsToRefresh.forEach(slot => {
+                        this.lastRefreshTime[slot.getSlotElementId()] = now;
+                    });
+                }
+            });
+        },
+
+        /**
          * Refresh a specific banner slot (respects 30s minimum).
          *
          * @param {string} divId - The div ID of the banner to refresh
@@ -199,7 +462,6 @@
             const minInterval = 30000; // 30 seconds
 
             if (now - lastRefresh < minInterval) {
-                console.log(`[QuizTvAds] Refresh blocked for ${divId} — minimum 30s interval.`);
                 return;
             }
 
@@ -235,8 +497,18 @@
 
         /**
          * Check if an element is currently visible in the viewport.
+         * NDTV-style: also checks collapsed wrappers by scroll position.
          */
         _isElementVisible(el) {
+            const wrapper = document.getElementById(el.id + '-wrapper');
+            if (wrapper) {
+                const isCollapsed = wrapper.classList.contains('ad-collapsed');
+                if (isCollapsed) {
+                    // Collapsed containers have 0 height, check vertical scroll bounds
+                    const rect = wrapper.getBoundingClientRect();
+                    return rect.top < window.innerHeight && rect.top > -100;
+                }
+            }
             const rect = el.getBoundingClientRect();
             return (
                 rect.top < window.innerHeight &&
@@ -244,71 +516,6 @@
                 rect.width > 0 &&
                 rect.height > 0
             );
-        },
-
-        showRewarded(slotPath, onReward, onClose) {
-            if (!this.initialized || !slotPath) {
-                if (onClose) onClose(false);
-                return;
-            }
-
-            let resolved = false;
-            const safeClose = (status) => {
-                if (resolved) return;
-                resolved = true;
-                if (onClose) onClose(status);
-            };
-
-            // Set safety fallback timeout (2.5 seconds) in case GPT fails to load/render the ad
-            const safetyTimeout = setTimeout(() => {
-                console.warn('[QuizTvAds] Rewarded ad loading timed out. Proceeding...');
-                safeClose(false);
-            }, 2500);
-
-            googletag.cmd.push(() => {
-                try {
-                    // Define rewarded ad slot
-                    const rewardedSlot = googletag.defineOutOfPageSlot(
-                        slotPath,
-                        googletag.enums.OutOfPageFormat.REWARDED
-                    );
-
-                    if (!rewardedSlot) {
-                        console.warn('[QuizTvAds] Could not create rewarded slot.');
-                        clearTimeout(safetyTimeout);
-                        safeClose(false);
-                        return;
-                    }
-
-                    rewardedSlot.addService(googletag.pubads());
-
-                    // Listen for rewarded ad events
-                    googletag.pubads().addEventListener('rewardedSlotReady', (event) => {
-                        clearTimeout(safetyTimeout); // Clear safety timeout since ad is ready to show
-                        event.makeRewardedVisible();
-                    });
-
-                    googletag.pubads().addEventListener('rewardedSlotGranted', () => {
-                        // User earned the reward
-                        if (onReward) onReward();
-                    });
-
-                    googletag.pubads().addEventListener('rewardedSlotClosed', () => {
-                        // Cleanup
-                        clearTimeout(safetyTimeout);
-                        googletag.destroySlots([rewardedSlot]);
-                        safeClose(true);
-                    });
-
-                    googletag.enableServices();
-                    googletag.display(rewardedSlot);
-
-                } catch (e) {
-                    console.warn('[QuizTvAds] Rewarded ad error:', e);
-                    clearTimeout(safetyTimeout);
-                    safeClose(false);
-                }
-            });
         },
 
         /**

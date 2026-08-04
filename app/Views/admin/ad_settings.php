@@ -100,13 +100,69 @@
                 </div>
 
                 <div class="form-row">
-                    <label for="banner_play_slot" class="form-label">🎮 Quiz Play — Ad Unit Path</label>
+                    <label for="banner_play_slot" class="form-label">🎮 Quiz Play — Default Ad Unit Path</label>
                     <input type="text" id="banner_play_slot" name="banner_play_slot"
                            class="form-input"
                            value="<?= esc($settings['banner_play_slot'] ?? '') ?>"
                            placeholder="/12345678/QuizTv_Play_Banner">
-                    <span class="form-hint">Banner shown on quiz results screen after completion.</span>
+                    <span class="form-hint">Default fallback banner path for quiz play & results pages.</span>
                 </div>
+
+                <hr class="form-divider">
+
+                <details class="specific-position-slots" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                    <summary style="font-weight: 700; color: #1e293b; cursor: pointer; font-size: 14px;">🎯 Position-Specific Ad Unit Paths (Optional — For Granular GAM Reporting)</summary>
+                    <p style="font-size: 12px; color: #64748b; margin: 8px 0 16px;">If left blank, each position automatically falls back to your primary Default Ad Unit Paths above.</p>
+                    
+                    <div class="form-grid-2">
+                        <div class="form-row">
+                            <label for="banner_left_rail_slot" class="form-label">🖥️ Desktop Left Rail (160×600)</label>
+                            <input type="text" id="banner_left_rail_slot" name="banner_left_rail_slot" class="form-input" value="<?= esc($settings['banner_left_rail_slot'] ?? '') ?>" placeholder="/12345678/QuizTv_Left_Rail">
+                        </div>
+                        <div class="form-row">
+                            <label for="banner_right_rail_slot" class="form-label">🖥️ Desktop Right Rail (160×600)</label>
+                            <input type="text" id="banner_right_rail_slot" name="banner_right_rail_slot" class="form-input" value="<?= esc($settings['banner_right_rail_slot'] ?? '') ?>" placeholder="/12345678/QuizTv_Right_Rail">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-row">
+                            <label for="banner_middle_desktop_slot" class="form-label">🖥️ Desktop Middle Banner (336×280)</label>
+                            <input type="text" id="banner_middle_desktop_slot" name="banner_middle_desktop_slot" class="form-input" value="<?= esc($settings['banner_middle_desktop_slot'] ?? '') ?>" placeholder="/12345678/QuizTv_Middle_Desktop">
+                        </div>
+                        <div class="form-row">
+                            <label for="banner_bottom_desktop_slot" class="form-label">🖥️ Desktop Bottom Banner (728×90)</label>
+                            <input type="text" id="banner_bottom_desktop_slot" name="banner_bottom_desktop_slot" class="form-input" value="<?= esc($settings['banner_bottom_desktop_slot'] ?? '') ?>" placeholder="/12345678/QuizTv_Bottom_Desktop">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-row">
+                            <label for="banner_sticky_top_mobile_slot" class="form-label">📱 Mobile Sticky Top (320×50)</label>
+                            <input type="text" id="banner_sticky_top_mobile_slot" name="banner_sticky_top_mobile_slot" class="form-input" value="<?= esc($settings['banner_sticky_top_mobile_slot'] ?? '') ?>" placeholder="/12345678/QuizTv_Sticky_Top_Mobile">
+                        </div>
+                        <div class="form-row">
+                            <label for="banner_sticky_bottom_mobile_slot" class="form-label">📱 Mobile Sticky Bottom Anchor (320×50)</label>
+                            <input type="text" id="banner_sticky_bottom_mobile_slot" name="banner_sticky_bottom_mobile_slot" class="form-input" value="<?= esc($settings['banner_sticky_bottom_mobile_slot'] ?? '') ?>" placeholder="/12345678/QuizTv_Sticky_Bottom_Mobile">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-row">
+                            <label for="banner_middle_mobile_slot" class="form-label">📱 Mobile Middle Banner (300×250)</label>
+                            <input type="text" id="banner_middle_mobile_slot" name="banner_middle_mobile_slot" class="form-input" value="<?= esc($settings['banner_middle_mobile_slot'] ?? '') ?>" placeholder="/12345678/QuizTv_Middle_Mobile">
+                        </div>
+                        <div class="form-row">
+                            <label for="banner_bottom_top_mobile_slot" class="form-label">📱 Mobile Pre-Option Banner (300×250)</label>
+                            <input type="text" id="banner_bottom_top_mobile_slot" name="banner_bottom_top_mobile_slot" class="form-input" value="<?= esc($settings['banner_bottom_top_mobile_slot'] ?? '') ?>" placeholder="/12345678/QuizTv_PreOption_Mobile">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="banner_bottom_mobile_slot" class="form-label">📱 Mobile Bottom Banner (300×250)</label>
+                        <input type="text" id="banner_bottom_mobile_slot" name="banner_bottom_mobile_slot" class="form-input" value="<?= esc($settings['banner_bottom_mobile_slot'] ?? '') ?>" placeholder="/12345678/QuizTv_Bottom_Mobile">
+                    </div>
+                </details>
 
                 <hr class="form-divider">
 

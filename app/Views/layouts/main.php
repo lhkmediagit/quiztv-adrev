@@ -112,24 +112,18 @@
         </div>
     <?php endif; ?>
 
+    <!-- NDTV-style Sticky Top Mobile Banner (hidden on desktop) -->
+    <?php if (is_ads_enabled()): ?>
+    <div class="sticky-top-ad hide-above-1024">
+        <?= render_banner_slot('sticky_top_mobile') ?>
+    </div>
+    <?php endif; ?>
+
     <!-- Main Content Container with Skyscraper Side Ads -->
     <div class="app-layout-container">
         <aside class="skyscraper-ad left-skyscraper">
-            <?php if (is_ads_enabled() && !empty(render_banner_slot('left_skyscraper'))): ?>
-                <?= render_banner_slot('left_skyscraper') ?>
-            <?php else: ?>
-                <div class="gam-skyscraper-mock" style="width: 160px; height: 600px; background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 8px; display: flex; flex-direction: column; padding: 12px; box-sizing: border-box; font-family: 'Outfit', sans-serif;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <span style="font-size: 9px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">Sponsored</span>
-                        <span style="font-size: 10px; color: #0284c7; font-weight: 800;">Ad info ℹ</span>
-                    </div>
-                    <div style="width: 100%; height: 120px; background-color: #1e293b; border-radius: 6px; overflow: hidden; margin-bottom: 12px; display: flex; align-items: center; justify-content: center;">
-                        <span style="font-size: 24px;">🌐</span>
-                    </div>
-                    <h4 style="font-size: 13px; font-weight: 800; color: #1e293b; margin: 0 0 6px; line-height: 1.3;">Name your idea with the right domain</h4>
-                    <p style="font-size: 11px; color: #64748b; margin: 0 0 16px; line-height: 1.4; flex-grow: 1;">Every great idea starts with the right name. Find a domain that fits your vision.</p>
-                    <a href="#" style="background: #1e293b; color: white; text-decoration: none; font-size: 11px; font-weight: 800; text-transform: uppercase; text-align: center; padding: 10px; border-radius: 4px; display: block; width: 100%; box-sizing: border-box;">Learn More</a>
-                </div>
+            <?php if (is_ads_enabled()): ?>
+                <?= render_banner_slot('left_rail') ?>
             <?php endif; ?>
         </aside>
 
@@ -138,21 +132,8 @@
         </main>
 
         <aside class="skyscraper-ad right-skyscraper">
-            <?php if (is_ads_enabled() && !empty(render_banner_slot('right_skyscraper'))): ?>
-                <?= render_banner_slot('right_skyscraper') ?>
-            <?php else: ?>
-                <div class="gam-skyscraper-mock" style="width: 160px; height: 600px; background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 8px; display: flex; flex-direction: column; padding: 12px; box-sizing: border-box; font-family: 'Outfit', sans-serif;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <span style="font-size: 9px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">Sponsored</span>
-                        <span style="font-size: 10px; color: #0284c7; font-weight: 800;">Ad info ℹ</span>
-                    </div>
-                    <div style="width: 100%; height: 120px; background-color: #1e293b; border-radius: 6px; overflow: hidden; margin-bottom: 12px; display: flex; align-items: center; justify-content: center;">
-                        <span style="font-size: 24px;">🌐</span>
-                    </div>
-                    <h4 style="font-size: 13px; font-weight: 800; color: #1e293b; margin: 0 0 6px; line-height: 1.3;">Name your idea with the right domain</h4>
-                    <p style="font-size: 11px; color: #64748b; margin: 0 0 16px; line-height: 1.4; flex-grow: 1;">Every great idea starts with the right name. Find a domain that fits your vision.</p>
-                    <a href="#" style="background: #1e293b; color: white; text-decoration: none; font-size: 11px; font-weight: 800; text-transform: uppercase; text-align: center; padding: 10px; border-radius: 4px; display: block; width: 100%; box-sizing: border-box;">Learn More</a>
-                </div>
+            <?php if (is_ads_enabled()): ?>
+                <?= render_banner_slot('right_rail') ?>
             <?php endif; ?>
         </aside>
     </div>
@@ -185,6 +166,14 @@
             </div>
         </div>
     </footer>
+
+    <!-- NDTV-style Sticky Bottom Mobile Anchor Ad (hidden on desktop) -->
+    <?php if (is_ads_enabled()): ?>
+    <div class="sticky-bottom-spacer hide-above-1024"></div>
+    <div class="sticky-bottom-ad hide-above-1024">
+        <?= render_banner_slot('sticky_bottom_mobile') ?>
+    </div>
+    <?php endif; ?>
 
     <script>
         // Toggle mobile navigation

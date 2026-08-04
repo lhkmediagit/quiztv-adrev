@@ -60,15 +60,17 @@
                         <div class="quiz-visual-container" id="quiz-visual" style="display: none;"></div>
                     </div>
                 </div>
-                <!-- Ad 1: Between Question and Options -->
-                <?= render_banner_slot('play_mid', 'ad-play-mid') ?>
+                <!-- Ad: Desktop Middle (336x280) — hidden on mobile -->
+                <?= render_banner_slot('middle_desktop', 'desktop-only') ?>
+                <!-- Ad: Mobile Middle (300x250) — hidden on desktop -->
+                <?= render_banner_slot('middle_mobile', 'mobile-only') ?>
 
                 <div class="quiz-options-list" id="quiz-options-list">
                     <!-- Option buttons will be dynamically injected here -->
                 </div>
 
-                <!-- Ad 2: Between Options/Explanation and Next Button -->
-                <?= render_banner_slot('play_question', 'ad-play-question') ?>
+                <!-- Ad: Mobile Pre-Option (300x250) — hidden on desktop -->
+                <?= render_banner_slot('bottom_top_mobile', 'mobile-only') ?>
                 
                 <div class="explanation-box" id="explanation-box" style="display: none;">
                     <div class="explanation-title" id="explanation-title">Correct answer 👍</div>
@@ -80,8 +82,10 @@
                     <button class="btn btn-primary btn-lg" id="next-question-btn" style="display: none;">Next Question ❯</button>
                 </div>
 
-                <!-- Ad 3: Below Next Button (For all quizzes) -->
-                <?= render_banner_slot('play_bottom', 'ad-play-banner') ?>
+                <!-- Ad: Desktop Bottom (728x90) — hidden on mobile -->
+                <?= render_banner_slot('bottom_desktop', 'desktop-only') ?>
+                <!-- Ad: Mobile Bottom (300x250) — hidden on desktop -->
+                <?= render_banner_slot('bottom_mobile', 'mobile-only') ?>
 
                 <!-- Custom Stats Box (QuizTv Slug Only) -->
                 <?php if ($quiz->slug === 'quiztv'): ?>

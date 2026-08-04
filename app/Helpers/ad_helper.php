@@ -4,6 +4,11 @@
  * Ad Helper
  * Provides utility functions for rendering Google Ad Manager ads
  * across all QuizTv views. Loaded globally via BaseController.
+ *
+ * Ad positions match NDTV Trivia's exact slot architecture:
+ * Desktop: TopBanner, LeftRail, RightRail, MiddleDesktop, BottomDesktop
+ * Mobile:  StickyTopMobile, MiddleMobile, BottomTopMobile, BottomMobile, StickyBottomMobile
+ * Shared:  PlayResult
  */
 
 if (!function_exists('get_ad_config')) {
@@ -42,9 +47,14 @@ if (!function_exists('render_banner_slot')) {
      * Render the HTML for a banner ad container.
      * The actual ad loading is handled by ads.js via GPT.
      *
-     * @param string $position  One of: home_top, home_mid, quiz_sidebar, play_result
-     * @param string $extraClass  Additional CSS class
-     * @return string  HTML output
+     * Positions match NDTV Trivia slot architecture:
+     *   sticky_top_mobile, left_rail, right_rail, middle_desktop,
+     *   middle_mobile, bottom_top_mobile, bottom_desktop, bottom_mobile,
+     *   sticky_bottom_mobile, play_result
+     *
+     * @param string $position     One of the NDTV-mapped position keys
+     * @param string $extraClass   Additional CSS class for responsive visibility
+     * @return string              HTML output
      */
     function render_banner_slot(string $position, string $extraClass = ''): string
     {
@@ -54,17 +64,27 @@ if (!function_exists('render_banner_slot')) {
             return '';
         }
 
-        // Map position to slot path
+        $b = $config['banner'];
+
+        // Map position to slot path (using specific position override if set, falling back to default slot)
         $slotMap = [
-            'home_top'         => $config['banner']['home_slot'],
-            'home_mid'         => $config['banner']['home_slot'],
-            'quiz_sidebar'     => $config['banner']['quiz_slot'],
-            'play_question'    => $config['banner']['quiz_slot'],
-            'play_mid'         => $config['banner']['quiz_slot'],
-            'play_result'      => $config['banner']['play_slot'],
-            'play_bottom'      => $config['banner']['play_slot'],
-            'left_skyscraper'  => $config['banner']['quiz_slot'],
-            'right_skyscraper' => $config['banner']['quiz_slot'],
+            // Mobile-only positions
+            'sticky_top_mobile'    => !empty($b['sticky_top_mobile_slot'])    ? $b['sticky_top_mobile_slot']    : $b['quiz_slot'],
+            'middle_mobile'        => !empty($b['middle_mobile_slot'])        ? $b['middle_mobile_slot']        : $b['quiz_slot'],
+            'bottom_top_mobile'    => !empty($b['bottom_top_mobile_slot'])    ? $b['bottom_top_mobile_slot']    : $b['play_slot'],
+            'bottom_mobile'        => !empty($b['bottom_mobile_slot'])        ? $b['bottom_mobile_slot']        : $b['play_slot'],
+            'sticky_bottom_mobile' => !empty($b['sticky_bottom_mobile_slot']) ? $b['sticky_bottom_mobile_slot'] : $b['quiz_slot'],
+            // Desktop-only positions
+            'left_rail'            => !empty($b['left_rail_slot'])            ? $b['left_rail_slot']            : $b['quiz_slot'],
+            'right_rail'           => !empty($b['right_rail_slot'])           ? $b['right_rail_slot']           : $b['quiz_slot'],
+            'middle_desktop'       => !empty($b['middle_desktop_slot'])       ? $b['middle_desktop_slot']       : $b['quiz_slot'],
+            'bottom_desktop'       => !empty($b['bottom_desktop_slot'])       ? $b['bottom_desktop_slot']       : $b['play_slot'],
+            // Shared positions
+            'play_result'          => $b['play_slot'],
+            // Legacy support
+            'home_top'             => $b['home_slot'],
+            'home_mid'             => $b['home_slot'],
+            'quiz_sidebar'         => $b['quiz_slot'],
         ];
 
         $slotPath = $slotMap[$position] ?? '';
@@ -72,23 +92,27 @@ if (!function_exists('render_banner_slot')) {
             return '';
         }
 
-        // Size mapping for different positions
+        // Size mapping matching NDTV Trivia dimensions
         $sizeMap = [
-            'home_top'         => ['728', '90'],
-            'home_mid'         => ['728', '90'],
-            'quiz_sidebar'     => ['300', '250'],
-            'play_question'    => ['300', '250'],
-            'play_mid'         => ['300', '250'],
-            'play_result'      => ['336', '280'],
-            'play_bottom'      => ['300', '250'],
-            'left_skyscraper'  => ['160', '600'],
-            'right_skyscraper' => ['160', '600'],
+            'sticky_top_mobile'    => ['320', '50'],
+            'left_rail'            => ['160', '600'],
+            'right_rail'           => ['160', '600'],
+            'middle_desktop'       => ['336', '280'],
+            'middle_mobile'        => ['300', '250'],
+            'bottom_top_mobile'    => ['300', '250'],
+            'bottom_desktop'       => ['728', '90'],
+            'bottom_mobile'        => ['300', '250'],
+            'sticky_bottom_mobile' => ['320', '50'],
+            'play_result'          => ['336', '280'],
+            'home_top'             => ['728', '90'],
+            'home_mid'             => ['336', '280'],
+            'quiz_sidebar'         => ['300', '250'],
         ];
 
         $size = $sizeMap[$position] ?? ['728', '90'];
         $divId = 'gam-banner-' . str_replace('_', '-', $position);
 
-        $html  = '<div class="ad-banner-container ' . esc($extraClass) . '" id="' . esc($divId) . '-wrapper" data-ad-empty="true">';
+        $html  = '<div class="ad-banner-container ' . esc($extraClass) . '" id="' . esc($divId) . '-wrapper" data-ad-empty="true" data-ad-id="' . esc($position) . '">';
         $html .= '<span class="ad-label">Advertisement</span>';
         $html .= '<div id="' . esc($divId) . '" ';
         $html .= 'data-ad-slot="' . esc($slotPath) . '" ';
@@ -96,7 +120,7 @@ if (!function_exists('render_banner_slot')) {
         $html .= 'data-ad-height="' . esc($size[1]) . '" ';
         $html .= 'class="ad-banner-slot">';
         $html .= '</div>';
-        $html .='<div class="Advertisement_bottom__ROuWn" data-show-label="true"></div>';
+        $html .= '<div class="Advertisement_bottom__ROuWn" data-show-label="true"></div>';
         $html .= '</div>';
 
         return $html;
