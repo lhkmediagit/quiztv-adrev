@@ -180,8 +180,14 @@
             // Load GPT library if not already present
             this._loadGPT(() => {
                 googletag.cmd.push(() => {
-                    googletag.pubads().enableSingleRequest();
-                    googletag.pubads().collapseEmptyDivs(true);
+                    if (typeof googletag.setConfig === 'function') {
+                        googletag.setConfig({ singleRequest: true });
+                    } else if (googletag.pubads && typeof googletag.pubads().enableSingleRequest === 'function') {
+                        googletag.pubads().enableSingleRequest();
+                    }
+                    if (googletag.pubads && typeof googletag.pubads().collapseEmptyDivs === 'function') {
+                        googletag.pubads().collapseEmptyDivs(true);
+                    }
                 });
                 this._setupRewardedListeners();
                 this._initAllBanners();
@@ -223,8 +229,14 @@
 
             googletag.cmd.push(() => {
                 // SRA + collapse
-                googletag.pubads().enableSingleRequest();
-                googletag.pubads().collapseEmptyDivs(true);
+                if (typeof googletag.setConfig === 'function') {
+                    googletag.setConfig({ singleRequest: true });
+                } else if (googletag.pubads && typeof googletag.pubads().enableSingleRequest === 'function') {
+                    googletag.pubads().enableSingleRequest();
+                }
+                if (googletag.pubads && typeof googletag.pubads().collapseEmptyDivs === 'function') {
+                    googletag.pubads().collapseEmptyDivs(true);
+                }
 
                 // Rewarded slot ready — store event and auto-show
                 googletag.pubads().addEventListener('rewardedSlotReady', function (event) {

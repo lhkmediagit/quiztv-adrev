@@ -1,10 +1,10 @@
 Ads Txt
- [x] Ads txt serving enabled
- [x] Ads txt serving disabled
+ [ ] Ads txt serving enabled
+ [ ] Ads txt serving disabled
 
 Example Database
- [x] Model find all
- [x] Soft delete leaves row
+ [ ] Model find all
+ [ ] Soft delete leaves row
 
 Example Session
  [x] Session simple
@@ -14,13 +14,13 @@ Health
  [x] Base url has been set
 
 Script Settings
- [x] Script settings database model
- [x] Script settings helper
- [x] Script settings routes registered
+ [ ] Script settings database model
+ [ ] Script settings helper
+ [ ] Script settings routes registered
 
 Security And Database
- [x] Password encryption
- [x] Auth filters redirect
- [x] Cache control headers
- [x] Ad settings structure
+ [ ] Password encryption
+ [ ] Auth filters redirect
+ [ ] Cache control headers
+ [ ] Ad settings structure
 
